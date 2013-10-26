@@ -29,6 +29,7 @@ from django.db.models import signals
 from django.utils.translation import ugettext_lazy as _
 from django.db.models.loading import cache
 from django.core.urlresolvers import reverse
+from django.conf import settings as djsettings
 
 from powerdns_manager import settings
 from powerdns_manager import signal_cb
@@ -43,6 +44,11 @@ http://doc.powerdns.com/generic-mypgsql-backends.html#idp9002432
 http://wiki.powerdns.com/trac/wiki/fields
 """
 
+
+if djsettings.AUTH_USER_MODEL:
+    AUTH_USER_MODEL = djsettings.AUTH_USER_MODEL
+else:
+    AUTH_USER_MODEL = AUTH_USER_MODEL
 
 class Domain(models.Model):
     """Model for PowerDNS domain."""
@@ -63,7 +69,7 @@ class Domain(models.Model):
     # PowerDNS Manager internal fields
     #date_created = models.DateTimeField(auto_now_add=True, verbose_name=_('Created on'))
     date_modified = models.DateTimeField(auto_now=True, verbose_name=_('Last Modified'))
-    created_by = models.ForeignKey('auth.User', related_name='%(app_label)s_%(class)s_created_by', null=True, verbose_name=_('created by'), help_text="""The Django user this zone belongs to.""")
+    created_by = models.ForeignKey(AUTH_USER_MODEL, related_name='%(app_label)s_%(class)s_created_by', null=True, verbose_name=_('created by'), help_text="""The Django user this zone belongs to.""")
     
     class Meta:
         db_table = 'domains'
@@ -351,7 +357,7 @@ class TsigKey(models.Model):
 
     # PowerDNS Manager internal fields
     date_modified = models.DateTimeField(auto_now=True, verbose_name=_('Last Modified'))
-    created_by = models.ForeignKey('auth.User', related_name='%(app_label)s_%(class)s_created_by', null=True, verbose_name=_('created by'), help_text="""The Django user this TSIG key belongs to.""")
+    created_by = models.ForeignKey(AUTH_USER_MODEL, related_name='%(app_label)s_%(class)s_created_by', null=True, verbose_name=_('created by'), help_text="""The Django user this TSIG key belongs to.""")
 
 
     class Meta:
