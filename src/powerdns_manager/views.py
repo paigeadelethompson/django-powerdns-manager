@@ -67,8 +67,8 @@ def import_zone_view(request):
                 info_dict = {
                     'strerror': mark_safe(str(e)),
                 }
-                return render_to_response('powerdns_manager/import/error.html', info_dict, mimetype='text/html')
-            return render_to_response('powerdns_manager/import/success.html', {}, mimetype='text/html')
+                return render_to_response('powerdns_manager/import/error.html', info_dict)
+            return render_to_response('powerdns_manager/import/success.html', {})
             
     else:
         form = ZoneImportForm() # An unbound form
@@ -77,7 +77,7 @@ def import_zone_view(request):
         'form': form,
     }
     return render_to_response(
-        'powerdns_manager/import/zone.html', info_dict, context_instance=RequestContext(request), mimetype='text/html')
+        'powerdns_manager/import/zone.html', info_dict, context_instance=RequestContext(request))
 
 
 
@@ -97,9 +97,9 @@ def import_axfr_view(request):
                 info_dict = {
                     'strerror': mark_safe(str(e)),
                 }
-                return render_to_response('powerdns_manager/import/error.html', {}, mimetype='text/html')
+                return render_to_response('powerdns_manager/import/error.html', {})
             info_dict = {'is_axfr': True}
-            return render_to_response('powerdns_manager/import/success.html', info_dict, mimetype='text/html')
+            return render_to_response('powerdns_manager/import/success.html', info_dict)
             
     else:
         form = AxfrImportForm() # An unbound form
@@ -108,7 +108,7 @@ def import_axfr_view(request):
         'form': form,
     }
     return render_to_response(
-        'powerdns_manager/import/axfr.html', info_dict, context_instance=RequestContext(request), mimetype='text/html')
+        'powerdns_manager/import/axfr.html', info_dict, context_instance=RequestContext(request))
 
 
 
@@ -120,7 +120,7 @@ def export_zone_view(request, origin):
         'origin': origin,
     }
     return render_to_response(
-        'powerdns_manager/export/zone.html', info_dict, context_instance=RequestContext(request), mimetype='text/html')
+        'powerdns_manager/export/zone.html', info_dict, context_instance=RequestContext(request))
 
 
 
