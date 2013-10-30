@@ -29,7 +29,7 @@ from django.db.models import signals
 from django.utils.translation import ugettext_lazy as _
 from django.db.models.loading import cache
 from django.core.urlresolvers import reverse
-from django.conf import settings as djsettings
+from django.conf import settings as django_settings
 
 from powerdns_manager import settings
 from powerdns_manager import signal_cb
@@ -45,10 +45,17 @@ http://wiki.powerdns.com/trac/wiki/fields
 """
 
 
-if djsettings.AUTH_USER_MODEL:
-    AUTH_USER_MODEL = djsettings.AUTH_USER_MODEL
+# Django 1.5 introduced the AUTH_USER_MODEL
+# https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-AUTH_USER_MODEL
+# Supporting castom user models requires this setting.
+# For backwards compatibility here we check whether ``django_settings`` contains
+# this setting and use it, otherwise use ``auth.User`` as a fallback.
+if hasattr(django_settings, 'AUTH_USER_MODEL'):
+    AUTH_USER_MODEL = django_settings.AUTH_USER_MODEL
 else:
-    AUTH_USER_MODEL = AUTH_USER_MODEL
+    AUTH_USER_MODEL = 'auth.User'
+
+
 
 class Domain(models.Model):
     """Model for PowerDNS domain."""
