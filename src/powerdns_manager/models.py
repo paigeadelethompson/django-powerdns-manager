@@ -47,7 +47,7 @@ http://wiki.powerdns.com/trac/wiki/fields
 
 # Django 1.5 introduced the AUTH_USER_MODEL
 # https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-AUTH_USER_MODEL
-# Supporting castom user models requires this setting.
+# Supporting custom user models requires this setting.
 # For backwards compatibility here we check whether ``django_settings`` contains
 # this setting and use it, otherwise use ``auth.User`` as a fallback.
 if hasattr(django_settings, 'AUTH_USER_MODEL'):
