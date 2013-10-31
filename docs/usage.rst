@@ -95,5 +95,9 @@ TODO
 Zone Cloning
 ============
 
+Select the zone to clone from the zone list and select the 'Clone the selected
+zone action'
+
 TODO
+ 
 
