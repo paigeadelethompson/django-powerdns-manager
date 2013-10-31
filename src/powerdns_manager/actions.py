@@ -126,7 +126,7 @@ def set_domain_type_bulk(modeladmin, request, queryset):
         'action_checkbox_name': helpers.ACTION_CHECKBOX_NAME,
     }
     return render_to_response(
-        'powerdns_manager/actions/set_domain_type.html', info_dict, context_instance=RequestContext(request), mimetype='text/html')
+        'powerdns_manager/actions/set_domain_type.html', info_dict, context_instance=RequestContext(request))
 set_domain_type_bulk.short_description = "Set domain type"
 
 
@@ -218,7 +218,7 @@ def set_ttl_bulk(modeladmin, request, queryset):
         'action_checkbox_name': helpers.ACTION_CHECKBOX_NAME,
     }
     return render_to_response(
-        'powerdns_manager/actions/set_ttl.html', info_dict, context_instance=RequestContext(request), mimetype='text/html')
+        'powerdns_manager/actions/set_ttl.html', info_dict, context_instance=RequestContext(request))
 set_ttl_bulk.short_description = "Set Resource Records TTL"
 
 
@@ -418,7 +418,7 @@ def clone_zone(modeladmin, request, queryset):
         'action_checkbox_name': helpers.ACTION_CHECKBOX_NAME,
     }
     return render_to_response(
-        'powerdns_manager/actions/clone_zone.html', info_dict, context_instance=RequestContext(request), mimetype='text/html')
+        'powerdns_manager/actions/clone_zone.html', info_dict, context_instance=RequestContext(request))
 clone_zone.short_description = "Clone the selected zone"
 
 
