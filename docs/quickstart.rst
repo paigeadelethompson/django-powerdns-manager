@@ -93,6 +93,11 @@ Finally, populate the dedicated django-powerdns-manager database::
 
     python manage.py syncdb --database=powerdns
 
+Optional step: load the default 'PowerDNS Managers' group to make it easier to
+to test the interface using multiple users::
+
+    python manage.py loaddata default_pdns_groups
+
 
 Start the PowerDNS server
 =========================
