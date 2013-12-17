@@ -29,6 +29,7 @@ import sys
 from optparse import make_option
 
 from django.core.management.base import BaseCommand, CommandError
+from django.contrib.auth import get_user_model
 
 from powerdns_manager.utils import process_axfr_response
 
@@ -45,6 +46,8 @@ class Command(BaseCommand):
             help='Set the hostname or IP address of the nameserver to contact.'),
         make_option('-d', '--domainfile', action='store', dest='domainfile', metavar="PATH",
             help='The path of text file containing domain names to import. File format is one domain per line.'),
+        make_option('-u', '--user', action='store', dest='username', metavar="USERNAME",
+            help='Set the username of the owner of the domain (optional).'),
         make_option('-o', '--overwrite', action='store_true', dest='overwrite',
             help='Overwrite existing zones.'),
     )
@@ -72,9 +75,18 @@ class Command(BaseCommand):
             domains.extend( [line.strip() for line in f.readlines() if line.strip()] )
             f.close()
         
+        # Determine owner
+        User = get_user_model()
+        try:
+            owner = User.objects.get(username=options.get('username'))
+        except User.DoesNotExist:
+            owner = None
+        
+        # Process domains
         for domain in domains:
             try:
-                process_axfr_response(domain, nameserver, overwrite=overwrite)
+                # TODO: ADD OWNER OPTION
+                process_axfr_response(domain, nameserver, owner, overwrite=overwrite)
             except Exception, e:
                 sys.stderr.write('error: %s: %s\n' % (str(e), domain))
                 sys.stderr.flush()

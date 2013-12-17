@@ -177,7 +177,7 @@ def generate_api_key():
         length=24, allowed_chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')
 
 
-def process_zone_file(origin, zonetext, overwrite=False):
+def process_zone_file(origin, zonetext, owner, overwrite=False):
     """Imports zone to the database.
     
     No checks for existence are performed in this file. For form processing,
@@ -199,7 +199,7 @@ def process_zone_file(origin, zonetext, overwrite=False):
         if not str(zone.origin).rstrip('.'):
             raise UnknownOrigin
         
-        process_and_import_zone_data(zone, overwrite)
+        process_and_import_zone_data(zone, owner, overwrite)
         
     except NoSOA:
         raise Exception('The zone has no SOA RR at its origin')
@@ -214,7 +214,7 @@ def process_zone_file(origin, zonetext, overwrite=False):
         raise Exception('The zone is malformed')
 
 
-def process_axfr_response(origin, nameserver, overwrite=False):
+def process_axfr_response(origin, nameserver, owner, overwrite=False):
     """
     origin: string domain name
     nameserver: IP of the DNS server
@@ -228,7 +228,7 @@ def process_axfr_response(origin, nameserver, overwrite=False):
         if not str(zone.origin).rstrip('.'):
             raise UnknownOrigin
         
-        process_and_import_zone_data(zone, overwrite)
+        process_and_import_zone_data(zone, owner, overwrite)
 
     except NoSOA:
         raise Exception('The zone has no SOA RR at its origin')
@@ -244,7 +244,7 @@ def process_axfr_response(origin, nameserver, overwrite=False):
         raise Exception(str(e))
     
 
-def process_and_import_zone_data(zone, overwrite=False):
+def process_and_import_zone_data(zone, owner, overwrite=False):
     """
     zone: dns.zone
     
@@ -273,7 +273,17 @@ def process_and_import_zone_data(zone, overwrite=False):
     # Import the new zone data to the database.
     
     # Create a domain instance
-    the_domain = Domain.objects.create(name=str(zone.origin).rstrip('.'), type='NATIVE', master='')
+    
+    #the_domain = Domain.objects.create(name=str(zone.origin).rstrip('.'), type='NATIVE', master='')
+    the_domain = Domain(
+        name=str(zone.origin).rstrip('.'),
+        type='NATIVE',
+        master='')
+    
+    if owner is not None:
+        the_domain.created_by = owner
+    
+    the_domain.save()
     
     # Create RRs
     for name, node in zone.nodes.items():

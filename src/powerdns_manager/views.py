@@ -62,7 +62,7 @@ def import_zone_view(request):
             overwrite = form.cleaned_data['overwrite']
             
             try:
-                process_zone_file(origin, zonetext, overwrite)
+                process_zone_file(origin, zonetext, request.user, overwrite)
             except Exception, e:
                 info_dict = {
                     'strerror': mark_safe(str(e)),
@@ -92,7 +92,7 @@ def import_axfr_view(request):
             overwrite = form.cleaned_data['overwrite']
             
             try:
-                process_axfr_response(origin, nameserver, overwrite)
+                process_axfr_response(origin, nameserver, request.user, overwrite)
             except Exception, e:
                 info_dict = {
                     'strerror': mark_safe(str(e)),
