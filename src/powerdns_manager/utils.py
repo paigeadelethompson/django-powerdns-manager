@@ -177,6 +177,18 @@ def generate_api_key():
         length=24, allowed_chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')
 
 
+def clean_zonefile(data):
+    EOL = '\n'
+    lines = []
+    f = StringIO.StringIO(data)
+    for line in f:
+        line = line.strip()
+        if line:
+            lines.append(line)
+    f.close()
+    return EOL.join(lines)
+
+
 def process_zone_file(origin, zonetext, owner, overwrite=False):
     """Imports zone to the database.
     
@@ -191,8 +203,7 @@ def process_zone_file(origin, zonetext, owner, overwrite=False):
     else:
         origin = None
     
-    zonetext = str(zonetext)
-    zonetext = zonetext.replace('\r\n', '\n')
+    zonetext = clean_zonefile(str(zonetext))
     
     try:
         zone = dns.zone.from_text(zonetext, origin=origin, relativize=False)
