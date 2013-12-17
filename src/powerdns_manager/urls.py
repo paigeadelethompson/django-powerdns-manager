@@ -24,7 +24,10 @@
 #  limitations under the License.
 #
 
-from django.conf.urls.defaults import *
+try:
+    from django.conf.urls.defaults import patterns, include, url
+except ImportError:
+    from django.conf.urls import patterns, include, url
 
 urlpatterns = patterns('powerdns_manager.views',
     url(r'^import/zonefile/$', 'import_zone_view', name='import_zone'),
