@@ -26,6 +26,7 @@ Features
   resource records supported by PowerDNS and customize the order in which they
   appear in the administration panel.
 - Zone cloning (experimental).
+- Zone transfers between users (experimental).
 - Zone file import through web form.
 - Zone file export.
 - Command-line interfaces to import and export zones in bulk.
