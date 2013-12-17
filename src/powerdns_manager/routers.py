@@ -82,6 +82,63 @@ class PowerdnsManagerDbRouter(object):
         """Point all operations on powerdns_manager models to 'powerdns'"""
         if model._meta.app_label == 'powerdns_manager':
             return 'powerdns'
+        elif model._meta.app_label == 'auth':
+            return 'default'
+        #elif model._meta.app_label == 'sessions':
+        #    return 'default'
+        
+        #if hints.has_key('instance'):
+            # The ModelAdmin for the Domain model needs to display information
+            # about a user (zone owner) or determine which fields to show based
+            # on user superuser status. By default it searches for the user
+            # table in the 'powerdns' database (used for Domain model).
+            # The table does not exist there, but in the 'default database,
+            # so there is an error: notable auth_user.
+            # In those cases we use the hints dictionary and check if the
+            # instance object is an instance of the auth.User model.
+            # If yes, then we return the 'default' database.
+            #
+            # Determined the type with:
+            #raise Exception(type(hints['instance']))
+            
+#             # This works partially.
+#             obj = hints['instance']
+#             from django.contrib.auth import get_user_model
+#             from django.db.models.loading import cache
+#             User = get_user_model()
+#             Domain = cache.get_model('powerdns_manager', 'Domain')
+#             if isinstance(obj, User):
+#                 return 'default'
+#             if isinstance(obj, Domain):
+#                 return 'powerdns'
+
+            # OTHER
+            #
+            #raise Exception(type(hints['instance']))
+            #obj = hints['instance']
+            #from django.contrib.auth import get_user_model
+            #raise Exception(get_user_model())
+            #User = get_user_model()
+            #if isinstance(obj, User):
+            #    raise Exception(model._meta.app_label)
+            #from django.contrib.contenttypes.models import ContentType
+            #if ContentType.objects.get_for_model(obj).name == 'user':
+            #    #raise Exception('here')
+            #    return 'default'
+            #raise Exception(model._meta.app_label)
+            #raise Exception(type(hints['instance']))
+            #if ContentType.objects.get_for_model(obj) == ContentType.objects.get_for_model(User):
+            #if ContentType.objects.get_for_model(obj).name == 'user':
+            #    raise Exception(type(hints['instance']))
+            #    return 'default'
+            #from django.contrib.auth.models import User
+            #if isinstance(hints['instance'], get_user_model()):
+            #return 'default'
+            #if isinstance(obj, User):
+            #if hasattr(obj, 'get_full_name'):
+                # Return the default database, since the user table is there.
+            #    return 'default'
+        #raise Exception(model._meta.app_label)
         return None
 
     def db_for_write(self, model, **hints):
