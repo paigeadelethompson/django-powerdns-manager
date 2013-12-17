@@ -33,6 +33,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.validators import validate_ipv4_address
 from django.core.validators import validate_ipv6_address
 from django.core.exceptions import ValidationError
+from django.contrib.auth import get_user_model
 
 from powerdns_manager import settings
 from powerdns_manager.utils import validate_hostname
@@ -632,4 +633,23 @@ class ClonedZoneDomainForm(forms.Form):
             raise forms.ValidationError('A zone with this name already exists. Please enter a new domain name.')
         
         return clone_domain_name
+
+
+
+class ZoneTransferForm(forms.Form):
+    """This form is used in intermediate page that sets the new zone owner."""
+    transfer_to_username = forms.CharField(max_length=255, required=True, label=_('Username'), help_text="""Enter the username of the account to which the zone will be transfered.""")
+
+    def clean_transfer_to_username(self):
+        transfer_to_username = self.cleaned_data.get('transfer_to_username')
+        
+        # Check if new owner exists.
+        User = get_user_model()
+        try:
+            new_owner = User.objects.get(username=transfer_to_username)
+        except User.DoesNotExist:
+            raise forms.ValidationError('An account with this username was not found.')
+        
+        return transfer_to_username
+
 
