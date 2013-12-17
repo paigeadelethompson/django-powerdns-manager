@@ -15,7 +15,7 @@ TODO
 Using actions:
 
 - set zone type (NATIVE, MASTER, SLAVE)
-- set TTL on all zone resource records
+- set TTL on all resource records of the selected zone.
 
 
 Using the Command Line Interface

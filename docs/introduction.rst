@@ -18,7 +18,7 @@ Features
 ========
 
 - Web based administration interface based on the admin Django app.
-- Easy management of all records of a zone from a signle web page.
+- Easy management of all records of a zone from a single web page.
 - Support for multiple users.
 - Database schema is DNSSEC enabled.
 - Automatic zone-rectify support using native python code.
