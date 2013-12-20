@@ -31,7 +31,7 @@ and have changed to the ``example`` directory::
 Install required software
 =========================
 
-The recommended version of PowerDNS is 3.1.
+The recommended version of PowerDNS is 3.3.1.
 
 Install the required software by following the operating system specific
 instructions below.
