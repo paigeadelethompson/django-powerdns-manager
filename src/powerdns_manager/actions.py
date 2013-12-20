@@ -378,14 +378,17 @@ def clone_zone(modeladmin, request, queryset):
                 
                 # Get the base domain's dynamic zone.
                 # There is only one Dynamic Zone object for each zone.
-                domain_dynzone_obj = DynamicZone.objects.get(domain=domain_obj)
-                
-                # Create and save the dynamic zone object for the clone.
-                clone_dynzone_obj = DynamicZone(
-                    domain = clone_obj,
-                    is_dynamic = domain_dynzone_obj.is_dynamic
-                    )
-                clone_dynzone_obj.save()
+                try:
+                    domain_dynzone_obj = DynamicZone.objects.get(domain=domain_obj)
+                except DynamicZone.DoesNotExist:
+                    pass
+                else:
+                    # Create and save the dynamic zone object for the clone.
+                    clone_dynzone_obj = DynamicZone(
+                        domain = clone_obj,
+                        is_dynamic = domain_dynzone_obj.is_dynamic
+                        )
+                    clone_dynzone_obj.save()
             
             # Clone the zone's metadata
             
