@@ -115,7 +115,9 @@ def interchange_domain(data, domain1, domain2):
     TODO: improve this description.
     
     """
-    if len(domain1) > len(data):
+    if not data:    # cacn happen with content of empty non-terminals
+        return None
+    elif len(domain1) > len(data):
         return data
     elif not data.endswith(domain1):
         return data
