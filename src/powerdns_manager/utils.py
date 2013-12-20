@@ -801,6 +801,73 @@ def rectify_zone(origin):
         rr.save()
 
 
+    #
+    # Manage empty non-terminal records.
+    # See: http://doc.powerdns.com/html/dnssec-modes.html#dnssec-direct-database
+    #
+    
+    # First delete all empty non-terminal records for the zone.
+    Record.objects.filter(domain__name=origin, type__isnull=True).delete()
+    
+    # Get a fresh list of the zone's records.
+    # The query excludes:
+    #    1) empty non-terminals
+    #    2) records with auth=0 (RRs for which the server is not authoritative)
+    #
+    #zone_rr_list = Record.objects.filter(domain__name=origin, auth=True).exclude(type=None)
+    zone_rr_list = Record.objects.filter(domain__name=origin, auth=True)
+    
+    # Get a list of the record names.
+    rr_name_list = [rr.name for rr in zone_rr_list]
+
+    # List to store the hostnames for which an empty non-terminal will be created.
+    rr_terminal_todo = []
+    
+    # We will use the ordername field, which has been set previously in this
+    # function. The 'ordername' field contains parts of the hostname (excluding
+    # the origin) in reverse order separated by a space.
+    for rr in zone_rr_list:
+        
+        # No empty non-terminal management needed.
+        if rr.name == origin:
+            continue
+        
+        ordername_parts = rr.ordername.split()
+        
+        #print rr.name
+        #print ordername_parts
+        
+        hostname = origin
+        for part in ordername_parts:
+            # Construct the hostname
+            hostname = '%s.%s' % (part, hostname)
+            
+            # If a normal record exists for the hostname, continue
+            if hostname in rr_name_list:
+                continue
+            
+            # Add the hostname to the list of empty non-terminal too be created.
+            rr_terminal_todo.append(hostname)
+            print "CREATE TERMINAL FOR: %s" % hostname
+        
+    # Create the needed empty non-terminals
+    # First remove duplicates from the list
+    unique_terminal_hostnames = set(rr_terminal_todo)
+    for hostname in unique_terminal_hostnames:
+        rr_terminal = Record(
+            domain = the_domain,
+            name = hostname,
+            type = None,
+            content = None,
+            ttl = None,
+            prio = None,
+            auth = True,
+            ordername = None,
+            change_date = None
+        )
+        rr_terminal.save()
+
+
 
 
 def sha1hash(x, salt):
