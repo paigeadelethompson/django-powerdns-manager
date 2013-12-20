@@ -214,8 +214,8 @@ class EmptyNonTerminalRecordInline(admin.TabularInline):
     extra = 0
     verbose_name = 'Empty Non-Terminal Resource Record'
     verbose_name_plural = 'Empty Non-Terminal Resource Record' # Only one SOA RR per zone
-    fields = ('name', 'ttl', 'content')
-    readonly_fields = ('name', 'ttl', 'content')
+    fields = ('name', 'type', 'content', 'ttl', 'prio', 'auth', 'ordername', 'change_date')
+    readonly_fields = ('name', 'type', 'content', 'ttl', 'prio', 'auth', 'ordername', 'change_date')
     can_delete = False
     
     def queryset(self, request):
