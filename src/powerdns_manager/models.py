@@ -228,7 +228,7 @@ class Record(models.Model):
         The following actions are performed:
         
         1) Sets the current timestamp to the ``change_date`` field. This is
-        used by PowerDNS.
+        used by PowerDNS. (Empty non-terminals are excluded)
         
         2) Sets the TTL of the resource record(s), if missing. Since
         ``get_minimum_ttl()`` retrieves the minimum TTL from the SOA record,
@@ -240,10 +240,12 @@ class Record(models.Model):
         4) Set the ``ordername`` field. Needed by PowerDNS internals.
         
         """
-        self.change_date = generate_serial_timestamp()
+        if self.type is not None:   # Exclude empty non-terminals
+            
+            self.change_date = generate_serial_timestamp()
         
-        if not self.ttl:
-            self.ttl = self.domain.get_minimum_ttl()
+            if not self.ttl:
+                self.ttl = self.domain.get_minimum_ttl()
         
         # auth and ordername fields are set automatically after the zone and
         # all records have been saved. See: admin.DomainAdmin.save_related()
