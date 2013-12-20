@@ -331,7 +331,7 @@ def clone_zone(modeladmin, request, queryset):
             
             # Clone Resource Records
             
-            # Find all resource records of this domain
+            # Find all resource records of this domain (also clones empty non-terminals)
             domain_rr_qs = Record.objects.filter(domain=domain_obj)
             
             # Create the clone's RRs
