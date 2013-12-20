@@ -396,15 +396,18 @@ def clone_zone(modeladmin, request, queryset):
                 
                 # Get the base domain's metadata object.
                 # There is only one metadata object for each zone.
-                domain_metadata_obj = DomainMetadata.objects.get(domain=domain_obj)
-                
-                # Create and save the metadata object for the clone.
-                clone_metadata_obj = DomainMetadata(
-                    domain = clone_obj,
-                    kind = domain_metadata_obj.kind,
-                    content = domain_metadata_obj.content
-                    )
-                clone_metadata_obj.save()
+                try:
+                    domain_metadata_obj = DomainMetadata.objects.get(domain=domain_obj)
+                except DomainMetadata.DoesNotExist:
+                    pass
+                else:
+                    # Create and save the metadata object for the clone.
+                    clone_metadata_obj = DomainMetadata(
+                        domain = clone_obj,
+                        kind = domain_metadata_obj.kind,
+                        content = domain_metadata_obj.content
+                        )
+                    clone_metadata_obj.save()
             
             messages.info(request, 'Successfully cloned %s zone to %s' % \
                 (domain_obj.name, clone_domain_name))
