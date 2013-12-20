@@ -89,8 +89,8 @@ You will be prompted to create a superuser. Create this user and take a note
 of the username and password as this is what you will use to log into the
 web based administration interface.
 
-Optional step: load the default 'PowerDNS Managers' group to make it easier to
-to test the interface using multiple users::
+Optional step (but highly recommended): load the default 'PowerDNS Managers'
+group to make it easier to test the interface using multiple users::
 
     python manage.py loaddata default_pdns_groups
 
