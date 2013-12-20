@@ -209,7 +209,7 @@ class Record(models.Model):
         verbose_name = _('record')
         verbose_name_plural = _('records')
         get_latest_by = 'date_modified'
-        ordering = ['type']
+        ordering = ['name', 'type']
         index_together = [
             ['name', 'type'],
             ['domain', 'ordername'],
