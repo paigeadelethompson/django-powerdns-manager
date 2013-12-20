@@ -758,7 +758,7 @@ def rectify_zone(origin):
             
             # Generate ordername content
             name_parts = rr.name.split('.')
-            ordername_content_parts = name_parts[:-3]
+            ordername_content_parts = name_parts[:-len(origin_parts)]
             ordername_content_parts.reverse()
             ordername_content = ' '.join(ordername_content_parts)
                 
