@@ -66,13 +66,18 @@ def reset_api_key(modeladmin, request, queryset):
     n = queryset.count()
     for domain_obj in queryset:
         # Only one DynamicZone instance for each Domain
-        dz = DynamicZone.objects.get(domain=domain_obj)
-        if dz.api_key:
-            dz.api_key = generate_api_key()
-            dz.save()
-        else:
+        try:
+            dz = DynamicZone.objects.get(domain=domain_obj)
+        except DynamicZone.DoesNotExist:
             messages.error(request, 'Zone is not dynamic: %s' % domain_obj.name)
             n = n - 1
+        else:
+            if dz.api_key:
+                dz.api_key = generate_api_key()
+                dz.save()
+            else:
+                messages.error(request, 'Zone is not dynamic: %s' % domain_obj.name)
+                n = n - 1
     if n:
         messages.info(request, 'Successfully updated %d domains.' % n)
 reset_api_key.short_description = "Reset API Key"
