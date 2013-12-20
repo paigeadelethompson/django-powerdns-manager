@@ -180,8 +180,8 @@ def set_ttl_bulk(modeladmin, request, queryset):
             
             if n and new_ttl:
                 for domain_obj in queryset:
-                    # Find all resource records of this domain
-                    qs = Record.objects.filter(domain=domain_obj)
+                    # Find all resource records of this domain (excludes empty non-terminals)
+                    qs = Record.objects.filter(domain=domain_obj).exclude(type__isnull=True)
                     # Now set the new TTL
                     for rr in qs:
                         rr.ttl = int(new_ttl)
