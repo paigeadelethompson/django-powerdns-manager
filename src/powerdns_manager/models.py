@@ -405,7 +405,7 @@ class DynamicZone(models.Model):
     """
     domain = models.ForeignKey('powerdns_manager.Domain', unique=True, related_name='%(app_label)s_%(class)s_domain', verbose_name=_('domain'), help_text=_("""Select the domain, the A and AAAA records of which might be updated dynamically over HTTP."""))
     is_dynamic = models.BooleanField(verbose_name=_('Dynamic zone'), help_text="""Check to mark this zone as dynamic. An API key will be generated for you so as to be able to update the A nd AAAA records IP addresses over HTTP.""")
-    api_key = models.CharField(max_length=24, null=True, verbose_name=_('API Key'), help_text="""The API key is generated automatically. To reset it, use the relevant action in the changelist view.""")
+    api_key = models.CharField(max_length=64, null=True, verbose_name=_('API Key'), help_text="""The API key is generated automatically. To reset it, use the relevant action in the changelist view.""")
     date_modified = models.DateTimeField(auto_now=True, verbose_name=_('Last Modified'))
     
     class Meta:
