@@ -21,7 +21,8 @@ Features
 - Easy management of all records of a zone from a single web page.
 - Support for multiple users.
 - Database schema is DNSSEC enabled.
-- Automatic zone-rectify support using native python code.
+- Automatic zone-rectify support, including support for empty non-terminals,
+  using native python code.
 - The application can be configured to support a user-defined subset of the
   resource records supported by PowerDNS and customize the order in which they
   appear in the administration panel.
