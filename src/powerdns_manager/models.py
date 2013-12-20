@@ -161,7 +161,7 @@ class Domain(models.Model):
         html_link = '<a href="%s"><strong>export zone</strong></a>' % reverse('export_zone', kwargs={'origin': self.name})
         return html_link
     export_zone_html_link.allow_tags = True
-    export_zone_html_link.short_description = 'Export'
+    export_zone_html_link.short_description = 'Export zone file'
 
 signal_cb.zone_saved.connect(signal_cb.rectify_zone_cb, sender=Domain)
 signal_cb.zone_saved.connect(signal_cb.update_zone_serial_cb, sender=Domain)
