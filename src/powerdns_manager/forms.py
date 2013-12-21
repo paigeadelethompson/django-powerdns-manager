@@ -204,7 +204,7 @@ class SoaRecordModelForm(BaseRecordModelForm):
         self.instance.content = '%s %s %d %s %s %s %s' % (
             self.cleaned_data.get('primary'),
             self.cleaned_data.get('hostmaster'),
-            int(time.time()),
+            self.cleaned_data.get('serial'),
             self.cleaned_data.get('refresh'),
             self.cleaned_data.get('retry'),
             self.cleaned_data.get('expire'),
