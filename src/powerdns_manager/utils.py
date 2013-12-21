@@ -837,9 +837,6 @@ def rectify_zone(origin):
         
         ordername_parts = rr.ordername.split()
         
-        #print rr.name
-        #print ordername_parts
-        
         hostname = origin
         for part in ordername_parts:
             # Construct the hostname
@@ -851,7 +848,7 @@ def rectify_zone(origin):
             
             # Add the hostname to the list of empty non-terminal too be created.
             rr_terminal_todo.append(hostname)
-            print "CREATE TERMINAL FOR: %s" % hostname
+            #print "CREATE TERMINAL FOR: %s" % hostname
         
     # Create the needed empty non-terminals
     # First remove duplicates from the list
