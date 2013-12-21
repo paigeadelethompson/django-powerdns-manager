@@ -653,3 +653,25 @@ class ZoneTransferForm(forms.Form):
         return transfer_to_username
 
 
+
+class TemplateOriginForm(forms.Form):
+    """This form is used in intermediate page that creates a new zone from a template."""
+    origin = forms.CharField(max_length=255, required=True, label=_('origin'), help_text="""Enter the origin of the new zone.""")
+
+    def clean_origin(self):
+        origin = self.cleaned_data.get('origin')
+        
+        # 1) Check for valid characters
+        validate_hostname(origin, supports_cidr_notation=True)
+        
+        # 2) Check for uniqueness
+        Domain = cache.get_model('powerdns_manager', 'Domain')
+        try:
+            domain_obj = Domain.objects.get(name=origin)
+        except Domain.DoesNotExist:
+            pass
+        else:
+            raise forms.ValidationError('A zone with this name already exists. Please enter a new domain name.')
+        
+        return origin
+
