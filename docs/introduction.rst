@@ -30,6 +30,7 @@ Features
 - Zone transfers between users (experimental).
 - Zone file import through web form.
 - Zone file export.
+- Basic zone templates.
 - Command-line interfaces to import and export zones in bulk.
 - Support for secure updating of dynamic IP addresses in A and AAAA records.
 - Contains demo project for quick start and experimentation.
