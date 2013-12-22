@@ -37,6 +37,18 @@ Features
 - Contains demo project for quick start and experimentation.
 
 
+Donations
+=========
+
+This software is released as free-software and provided to you at no cost. However,
+a significant amount of time and effort has gone into developing this software
+and writing this documentation. So, the production of this software has not
+been free from cost. It is highly recommended that, if you use this software
+*in production*, you should consider making a donation_.
+
+.. _donation: http://bit.ly/19kIb70
+
+
 License
 =======
 

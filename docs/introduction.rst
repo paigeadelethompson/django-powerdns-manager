@@ -54,15 +54,9 @@ This software is released as free-software and provided to you at no cost. Howev
 a significant amount of time and effort has gone into developing this software
 and writing this documentation. So, the production of this software has not
 been free from cost. It is highly recommended that, if you use this software
-*in production*, you should consider making a donation.
+*in production*, you should consider making a donation_.
 
-To make a donation, please visit the CodeTRAX `donations page`_ which contains
-a PayPal_ *donate* button.
-
-Thank you for considering making a donation to django-powerdns-manager.
-
-.. _`donations page`: https://source.codetrax.org/donate.html
-.. _PayPal: https://www.paypal.com
+.. _donation: http://bit.ly/19kIb70
 
 
 Bugs and feature requests
