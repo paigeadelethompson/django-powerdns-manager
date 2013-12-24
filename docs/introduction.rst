@@ -17,7 +17,7 @@ exists in the license_ section.
 Features
 ========
 
-- Web based administration interface based on the admin Django app.
+- Web based administration interface based on the *admin* Django app.
 - Easy management of all records of a zone from a single web page.
 - Support for multiple users.
 - Database schema is DNSSEC enabled.
@@ -27,7 +27,7 @@ Features
   resource records supported by PowerDNS and customize the order in which they
   appear in the administration panel.
 - Zone cloning (experimental).
-- Zone transfers between users (experimental).
+- Zone transfers between users.
 - Zone file import through web form.
 - Zone file export.
 - Basic zone templates.
@@ -36,15 +36,35 @@ Features
 - Contains demo project for quick start and experimentation.
 
 
-Documentation
-=============
+Quickstart Guide
+================
 
-Apart from the `django-powerdns-manager Online Documentation`_, more information about the
-installation, configuration and usage of this application may be available
-at the project's wiki_.
+The distribution package of *django-powerdns-manager* contains an example
+project that can help you check out the features of the software and also
+quickly experiment with the source code.
 
-.. _`django-powerdns-manager Online Documentation`: http://packages.python.org/django-powerdns-manager
-.. _wiki: http://www.codetrax.org/projects/django-powerdns-manager/wiki
+Although, the example project has already been configured for you, there are
+still some required steps before you are able to run it using the development
+server. These steps are discussed in detail in the `Quickstart Guide`_.
+
+.. _`Quickstart Guide`: http://pythonhosted.org/django-powerdns-manager/quickstart.html
+
+
+Development
+===========
+
+The source code of this project is available at the following official repositories.
+
+Main repository (*mercurial*)::
+
+    https://bitbucket.org/gnotaras/django-powerdns-manager
+
+Mirror repository (*git*)::
+
+    https://github.com/gnotaras/django-powerdns-manager
+
+Pull requests are welcome. Please note that it may take a long time before pull
+requests are reviewed.
 
 
 Donations
@@ -57,6 +77,17 @@ been free from cost. It is highly recommended that, if you use this software
 *in production*, you should consider making a donation_.
 
 .. _donation: http://bit.ly/19kIb70
+
+
+Documentation
+=============
+
+Apart from the `django-powerdns-manager Online Documentation`_, more information about the
+installation, configuration and usage of this application may be available
+at the project's wiki_.
+
+.. _`django-powerdns-manager Online Documentation`: http://packages.python.org/django-powerdns-manager
+.. _wiki: http://www.codetrax.org/projects/django-powerdns-manager/wiki
 
 
 Bugs and feature requests

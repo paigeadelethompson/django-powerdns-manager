@@ -18,7 +18,7 @@ exists in the license_ section.
 Features
 ========
 
-- Web based administration interface based on the admin Django app.
+- Web based administration interface based on the *admin* Django app.
 - Easy management of all records of a zone from a single web page.
 - Support for multiple users.
 - Database schema is DNSSEC enabled.
@@ -28,13 +28,44 @@ Features
   resource records supported by PowerDNS and customize the order in which they
   appear in the administration panel.
 - Zone cloning (experimental).
-- Zone transfers between users (experimental).
+- Zone transfers between users.
 - Zone file import through web form.
 - Zone file export.
 - Basic zone templates.
 - Command-line interfaces to import and export zones in bulk.
 - Support for secure updating of dynamic IP addresses in A and AAAA records.
 - Contains demo project for quick start and experimentation.
+
+
+Quickstart Guide
+================
+
+The distribution package of *django-powerdns-manager* contains an example
+project that can help you check out the features of the software and also
+quickly experiment with the source code.
+
+Although, the example project has already been configured for you, there are
+still some required steps before you are able to run it using the development
+server. These steps are discussed in detail in the `Quickstart Guide`_.
+
+.. _`Quickstart Guide`: http://pythonhosted.org/django-powerdns-manager/quickstart.html
+  
+
+Development
+===========
+
+The source code of this project is available at the following official repositories.
+
+Main repository (*mercurial*)::
+
+    https://bitbucket.org/gnotaras/django-powerdns-manager
+
+Mirror repository (*git*)::
+
+    https://github.com/gnotaras/django-powerdns-manager
+
+Pull requests are welcome. Please note that it may take a long time before pull
+requests are reviewed.
 
 
 Donations
