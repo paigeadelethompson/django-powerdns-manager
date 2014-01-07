@@ -14,6 +14,23 @@ django-powerdns-manager is a web based PowerDNS_ administration panel.
 Licensed under the *Apache License version 2.0*. More licensing information
 exists in the license_ section.
 
+.. warning::
+
+   *django-powerdns-manager* is not a finished product and should be considered
+   **work in progress**. Until the first stable release is out, changes to the
+   database schema and the supported features may occur without notice and
+   without the provision of migration instructions or scripts.
+   
+   Please, do not use this software in production.
+   
+   As soon as the first stable release is out, backwards compatibility will be
+   preserved and release notes containing migration instructions will be
+   published in future releases.
+   
+   If you still need to use this software in production, you are on your own.
+   In such a case, it is recommended to pick a release that works for you and
+   stick to it without upgrading, until the first final version is out.
+
 
 Features
 ========
