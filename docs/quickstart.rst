@@ -81,7 +81,7 @@ Populate the database
 
    Current directory is: ``django-powerdns-manager/example/``
 
-Populate the Django project's database::
+First, populate the Django project's database::
 
     python manage.py syncdb
 
@@ -89,8 +89,12 @@ You will be prompted to create a superuser. Create this user and take a note
 of the username and password as this is what you will use to log into the
 web based administration interface.
 
-Optional step (but highly recommended): load the default 'PowerDNS Managers'
-group to make it easier to test the interface using multiple users::
+Finally, populate the dedicated django-powerdns-manager database::
+
+    python manage.py syncdb --database=powerdns
+
+Optional step: load the default 'PowerDNS Managers' group to make it easier to
+to test the interface using multiple users::
 
     python manage.py loaddata default_pdns_groups
 
@@ -117,15 +121,15 @@ working as expected::
     Nov 02 11:42:33 PowerDNS 3.1 (C) 2001-2012 PowerDNS.COM BV (Oct 22 2012, 04:10:24, gcc 4.4.6 20120305 (Red Hat 4.4.6-4)) starting up
     Nov 02 11:42:33 PowerDNS comes with ABSOLUTELY NO WARRANTY. This is free software, and you are welcome to redistribute it according to the terms of the GPL version 2.
     Nov 02 11:42:33 Creating backend connection for TCP
-    Nov 02 11:42:33 gsqlite3: connection to 'main.db' successful
-    Nov 02 11:42:33 gsqlite3: connection to 'main.db' successful
+    Nov 02 11:42:33 gsqlite3: connection to 'powerdns.db' successful
+    Nov 02 11:42:33 gsqlite3: connection to 'powerdns.db' successful
     Nov 02 11:42:33 About to create 3 backend threads for UDP
-    Nov 02 11:42:33 gsqlite3: connection to 'main.db' successful
-    Nov 02 11:42:33 gsqlite3: connection to 'main.db' successful
-    Nov 02 11:42:33 gsqlite3: connection to 'main.db' successful
-    Nov 02 11:42:33 gsqlite3: connection to 'main.db' successful
-    Nov 02 11:42:33 gsqlite3: connection to 'main.db' successful
-    Nov 02 11:42:33 gsqlite3: connection to 'main.db' successful
+    Nov 02 11:42:33 gsqlite3: connection to 'powerdns.db' successful
+    Nov 02 11:42:33 gsqlite3: connection to 'powerdns.db' successful
+    Nov 02 11:42:33 gsqlite3: connection to 'powerdns.db' successful
+    Nov 02 11:42:33 gsqlite3: connection to 'powerdns.db' successful
+    Nov 02 11:42:33 gsqlite3: connection to 'powerdns.db' successful
+    Nov 02 11:42:33 gsqlite3: connection to 'powerdns.db' successful
     Nov 02 11:42:33 Done launching threads, ready to distribute questions
 
 ``--local-address=192.168.0.101`` is used to make PowerDNS bind on the network

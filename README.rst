@@ -51,6 +51,9 @@ Features
 - Basic zone templates.
 - Command-line interfaces to import and export zones in bulk.
 - Support for secure updating of dynamic IP addresses in A and AAAA records.
+- Supports using a dedicated database to store the tables needed by PowerDNS.
+  This database may use a different backend than the main database of the
+  Django project.
 - Contains demo project for quick start and experimentation.
 
 
