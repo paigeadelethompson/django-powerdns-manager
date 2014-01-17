@@ -245,9 +245,9 @@ class DomainAdmin(admin.ModelAdmin):
     form = DomainModelForm
     fields = ('date_modified', 'name', 'type', 'master', 'created_by')
     readonly_fields = ('date_modified', 'created_by')
-    list_display = ('name', 'export_zone_html_link', 'type', 'master', 'date_modified')
-    list_filter = ['type', ]
-    search_fields = ['name', 'master']
+    list_display = ('name', 'export_zone_html_link', 'type', 'master', 'date_modified', 'created_by')
+    list_filter = ['type', 'created_by']
+    search_fields = ['name', 'master', 'created_by']
     verbose_name = 'zone'
     verbose_name_plural = 'zones'
     save_on_top = True
