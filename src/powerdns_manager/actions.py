@@ -45,9 +45,11 @@ from powerdns_manager.forms import ZoneTypeSelectionForm
 from powerdns_manager.forms import TtlSelectionForm
 from powerdns_manager.forms import ClonedZoneDomainForm
 from powerdns_manager.forms import ZoneTransferForm
+from powerdns_manager.forms import TemplateOriginForm
 from powerdns_manager.utils import generate_serial
 from powerdns_manager.utils import generate_api_key
 from powerdns_manager.utils import interchange_domain
+from powerdns_manager.utils import process_zone_file
 
 
 
@@ -66,13 +68,18 @@ def reset_api_key(modeladmin, request, queryset):
     n = queryset.count()
     for domain_obj in queryset:
         # Only one DynamicZone instance for each Domain
-        dz = DynamicZone.objects.get(domain=domain_obj)
-        if dz.api_key:
-            dz.api_key = generate_api_key()
-            dz.save()
-        else:
+        try:
+            dz = DynamicZone.objects.get(domain=domain_obj)
+        except DynamicZone.DoesNotExist:
             messages.error(request, 'Zone is not dynamic: %s' % domain_obj.name)
             n = n - 1
+        else:
+            if dz.api_key:
+                dz.api_key = generate_api_key()
+                dz.save()
+            else:
+                messages.error(request, 'Zone is not dynamic: %s' % domain_obj.name)
+                n = n - 1
     if n:
         messages.info(request, 'Successfully updated %d domains.' % n)
 reset_api_key.short_description = "Reset API Key"
@@ -180,8 +187,8 @@ def set_ttl_bulk(modeladmin, request, queryset):
             
             if n and new_ttl:
                 for domain_obj in queryset:
-                    # Find all resource records of this domain
-                    qs = Record.objects.filter(domain=domain_obj)
+                    # Find all resource records of this domain (excludes empty non-terminals)
+                    qs = Record.objects.filter(domain=domain_obj).exclude(type__isnull=True)
                     # Now set the new TTL
                     for rr in qs:
                         rr.ttl = int(new_ttl)
@@ -331,7 +338,7 @@ def clone_zone(modeladmin, request, queryset):
             
             # Clone Resource Records
             
-            # Find all resource records of this domain
+            # Find all resource records of this domain (also clones empty non-terminals)
             domain_rr_qs = Record.objects.filter(domain=domain_obj)
             
             # Create the clone's RRs
@@ -378,14 +385,17 @@ def clone_zone(modeladmin, request, queryset):
                 
                 # Get the base domain's dynamic zone.
                 # There is only one Dynamic Zone object for each zone.
-                domain_dynzone_obj = DynamicZone.objects.get(domain=domain_obj)
-                
-                # Create and save the dynamic zone object for the clone.
-                clone_dynzone_obj = DynamicZone(
-                    domain = clone_obj,
-                    is_dynamic = domain_dynzone_obj.is_dynamic
-                    )
-                clone_dynzone_obj.save()
+                try:
+                    domain_dynzone_obj = DynamicZone.objects.get(domain=domain_obj)
+                except DynamicZone.DoesNotExist:
+                    pass
+                else:
+                    # Create and save the dynamic zone object for the clone.
+                    clone_dynzone_obj = DynamicZone(
+                        domain = clone_obj,
+                        is_dynamic = domain_dynzone_obj.is_dynamic
+                        )
+                    clone_dynzone_obj.save()
             
             # Clone the zone's metadata
             
@@ -393,15 +403,18 @@ def clone_zone(modeladmin, request, queryset):
                 
                 # Get the base domain's metadata object.
                 # There is only one metadata object for each zone.
-                domain_metadata_obj = DomainMetadata.objects.get(domain=domain_obj)
-                
-                # Create and save the metadata object for the clone.
-                clone_metadata_obj = DomainMetadata(
-                    domain = clone_obj,
-                    kind = domain_metadata_obj.kind,
-                    content = domain_metadata_obj.content
-                    )
-                clone_metadata_obj.save()
+                try:
+                    domain_metadata_obj = DomainMetadata.objects.get(domain=domain_obj)
+                except DomainMetadata.DoesNotExist:
+                    pass
+                else:
+                    # Create and save the metadata object for the clone.
+                    clone_metadata_obj = DomainMetadata(
+                        domain = clone_obj,
+                        kind = domain_metadata_obj.kind,
+                        content = domain_metadata_obj.content
+                        )
+                    clone_metadata_obj.save()
             
             messages.info(request, 'Successfully cloned %s zone to %s' % \
                 (domain_obj.name, clone_domain_name))
@@ -485,4 +498,74 @@ def transfer_zone_to_user(modeladmin, request, queryset):
     return render_to_response(
         'powerdns_manager/actions/transfer_zone.html', info_dict, context_instance=RequestContext(request))
 transfer_zone_to_user.short_description = 'Transfer zone to another user'
+
+
+
+def create_zone_from_template(modeladmin, request, queryset):
+    """Action that creates a new zone using the selected template.
+    
+    This action first displays a page which provides a text box where the user
+    can enter the origin of the new zone.
+    
+    It checks if the user has change permission.
+    
+    Based on: https://github.com/django/django/blob/1.4.2/django/contrib/admin/actions.py
+    
+    Important
+    ---------
+    In order to work requires some special form fields (see the template).
+    
+    """
+    opts = modeladmin.model._meta
+    app_label = opts.app_label
+    
+    # Check the number of selected templates. This action can work on a single template.
+    
+    n = queryset.count()
+    if n != 1:
+        messages.error(request, 'Only one template may be selected for this action.')
+        return None
+    
+    # Check that the user has change permission
+    if not modeladmin.has_change_permission(request):
+        raise PermissionDenied
+    
+    # The user has entered an origin through the forms.TemplateOriginForm form.
+    # Make the changes to the selected
+    # objects and return a None to display the change list view again.
+    #if request.method == 'POST':
+    if request.POST.get('post'):
+        origin = request.POST.get('origin')
+        
+        if origin:
+            
+            # The queryset contains exactly one object. Checked above.
+            template_obj = queryset[0]
+            
+            # Replace placeholder with origin in the template content.
+            zonetext = template_obj.content.replace('#origin#', origin)
+            
+            process_zone_file(origin, zonetext, request.user)
+            
+            #obj_display = force_unicode(obj)
+            #modeladmin.log_change(request, obj, obj_display)
+            messages.info(request, "Successfully created zone '%s' from template '%s'." % (origin, template_obj.name))
+            
+        # Return None to display the change list page again.
+        #return None
+        # Redirect to the new zone's change form.
+        Domain = cache.get_model('powerdns_manager', 'Domain')
+        domain_obj = Domain.objects.get(name=origin)
+        return HttpResponseRedirect(reverse('admin:%s_domain_change' % app_label, args=(domain_obj.id,)))
+    
+    info_dict = {
+        'form': TemplateOriginForm(),
+        'queryset': queryset,
+        'opts': opts,
+        'app_label': app_label,
+        'action_checkbox_name': helpers.ACTION_CHECKBOX_NAME,
+    }
+    return render_to_response(
+        'powerdns_manager/actions/zone_from_template.html', info_dict, context_instance=RequestContext(request))
+create_zone_from_template.short_description = "Create zone from template"
 

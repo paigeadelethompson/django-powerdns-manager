@@ -85,7 +85,6 @@ class Command(BaseCommand):
         # Process domains
         for domain in domains:
             try:
-                # TODO: ADD OWNER OPTION
                 process_axfr_response(domain, nameserver, owner, overwrite=overwrite)
             except Exception, e:
                 sys.stderr.write('error: %s: %s\n' % (str(e), domain))

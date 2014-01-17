@@ -17,9 +17,11 @@ Donations
     this software and writing this documentation. So, the production of this
     software has not been free from cost. It is highly recommended that, if
     you use this software *in production*, you should consider making a
-    donation.
+    donation_.
 
-**Please define use-in-production**
+.. _donation: http://bit.ly/19kIb70
+
+**Please, define use-in-production**
     *Use-in-production* refers to using this software to power a web site
     or to develop derivative works which are used to power a web site
     on the internet or in a corporate intranet.
@@ -30,11 +32,10 @@ Donations
     a better place for the developers of free software.
 
 **How do I make a donation?**
-    Please visit the CodeTRAX `donations page`_ which contains a PayPal_
-    *donate* button. Thank you for considering making a
-    donation to django-powerdns-manager.
+    Please visit the `donations form`_ at PayPal_. Thank you for considering
+    making a donation to django-powerdns-manager.
 
-.. _`donations page`: https://source.codetrax.org/donate.html
+.. _`donations form`: http://bit.ly/19kIb70
 .. _PayPal: https://www.paypal.com
 
 **What is CodeTRAX?**

@@ -1,10 +1,11 @@
+django-powerdns-manager
+========================================================================
 
-============
-Introduction
-============
-
-This section contains an introduction to *django-powerdns-manager*, including general
-information about how to submit bug reports and make feature requests.
+| **Author**: `George Notaras <http://www.g-loaded.eu/>`_
+| **Development Web Site**: `django-powerdns-manager project <http://www.codetrax.org/projects/django-powerdns-manager>`_
+| **Source Code Repository**: `django-powerdns-manager source code <https://bitbucket.org/gnotaras/django-powerdns-manager>`_
+| **Documentation**: `django-powerdns-manager documentation <http://packages.python.org/django-powerdns-manager>`_
+| **Downloads**: `django-powerdns-manager releases <http://pypi.python.org/pypi/django-powerdns-manager>`_
 
 django-powerdns-manager is a web based PowerDNS_ administration panel.
 
@@ -68,7 +69,7 @@ still some required steps before you are able to run it using the development
 server. These steps are discussed in detail in the `Quickstart Guide`_.
 
 .. _`Quickstart Guide`: http://pythonhosted.org/django-powerdns-manager/quickstart.html
-
+  
 
 Development
 ===========
@@ -97,43 +98,6 @@ been free from cost. It is highly recommended that, if you use this software
 *in production*, you should consider making a donation_.
 
 .. _donation: http://bit.ly/19kIb70
-
-
-Documentation
-=============
-
-Apart from the `django-powerdns-manager Online Documentation`_, more information about the
-installation, configuration and usage of this application may be available
-at the project's wiki_.
-
-.. _`django-powerdns-manager Online Documentation`: http://packages.python.org/django-powerdns-manager
-.. _wiki: http://www.codetrax.org/projects/django-powerdns-manager/wiki
-
-
-Bugs and feature requests
-=========================
-
-In case you run into any problems while using this application or think that
-a new feature should be implemented, it is highly recommended you submit_ a new
-report about it at the project's `issue tracker`_.
-
-Using the *issue tracker* is the recommended way to notify the authors about
-bugs or make feature requests. Also, before submitting a new report, please
-make sure you have read the `new issue guidelines`_.
-
-.. _submit: http://www.codetrax.org/projects/django-powerdns-manager/issues/new
-.. _`issue tracker`: http://www.codetrax.org/projects/django-powerdns-manager/issues
-.. _`new issue guidelines`: http://www.codetrax.org/NewIssueGuidelines
-
-
-Support
-=======
-
-CodeTRAX does not provide support for django-powerdns-manager.
-
-You can still get community support at the `Community Support Forums`_:
-
-.. _`Community Support Forums`: http://www.codetrax.org/projects/django-powerdns-manager/boards
 
 
 License

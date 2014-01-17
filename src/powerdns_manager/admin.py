@@ -62,6 +62,7 @@ from powerdns_manager.actions import force_serial_update
 from powerdns_manager.actions import reset_api_key
 from powerdns_manager.actions import clone_zone
 from powerdns_manager.actions import transfer_zone_to_user
+from powerdns_manager.actions import create_zone_from_template
 from powerdns_manager.utils import generate_api_key
 
 
@@ -95,7 +96,7 @@ class BaseTabularRecordInline(admin.TabularInline):
     def queryset(self, request):
         """Return only RR_TYPE records"""
         qs = super(BaseTabularRecordInline, self).queryset(request)
-        return qs.filter(type=self.RR_TYPE).order_by('name')
+        return qs.filter(type=self.RR_TYPE)
 
 
 
@@ -214,8 +215,8 @@ class EmptyNonTerminalRecordInline(admin.TabularInline):
     extra = 0
     verbose_name = 'Empty Non-Terminal Resource Record'
     verbose_name_plural = 'Empty Non-Terminal Resource Record' # Only one SOA RR per zone
-    fields = ('name', 'ttl', 'content')
-    readonly_fields = ('name', 'ttl', 'content')
+    fields = ('name', 'type', 'content', 'ttl', 'prio', 'auth', 'ordername', 'change_date')
+    readonly_fields = ('name', 'type', 'content', 'ttl', 'prio', 'auth', 'ordername', 'change_date')
     can_delete = False
     
     def queryset(self, request):
@@ -289,7 +290,7 @@ class DomainAdmin(admin.ModelAdmin):
         inlines.append(RR_INLINE_MAP[RR_TYPE])
     
     # Add other inlines
-    #inlines.append(EmptyNonTerminalRecordInline)    # TODO: empty non-terminal record support is for the future
+    #inlines.append(EmptyNonTerminalRecordInline)
     inlines.append(DomainMetadataInline)
     inlines.append(CryptoKeyInline)
     
@@ -386,5 +387,30 @@ class SuperMasterAdmin(admin.ModelAdmin):
     verbose_name_plural = 'SuperMasters'
     
 admin.site.register(cache.get_model('powerdns_manager', 'SuperMaster'), SuperMasterAdmin)
+
+
+
+class ZoneTemplateAdmin(admin.ModelAdmin):
+    fields = ('name', 'content', 'notes', 'date_modified')
+    readonly_fields = ('date_modified', )
+    list_display = ('name', 'date_modified')
+    search_fields = ('name', )
+    verbose_name = _('template')
+    verbose_name_plural = _('templates')
+    actions = [create_zone_from_template, ]
+    
+    def queryset(self, request):
+        qs = super(ZoneTemplateAdmin, self).queryset(request)
+        if not request.user.is_superuser:
+            # Non-superusers see the templates they have created
+            qs = qs.filter(created_by=request.user)
+        return qs
+    
+    def save_model(self, request, obj, form, change):
+        if not change:
+            obj.created_by = request.user
+        obj.save()
+    
+admin.site.register(cache.get_model('powerdns_manager', 'ZoneTemplate'), ZoneTemplateAdmin)
 
 

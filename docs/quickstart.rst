@@ -31,7 +31,7 @@ and have changed to the ``example`` directory::
 Install required software
 =========================
 
-The recommended version of PowerDNS is 3.1.
+The recommended version of PowerDNS is 3.3.1.
 
 Install the required software by following the operating system specific
 instructions below.
@@ -42,7 +42,7 @@ Red Hat Enterprise Linux, CentOS and Fedora
 
 Install system packages::
 
-    yum install pdns pdns-backend-sqlite sqlite python-sqlite2
+    yum install pdns pdns-backend-sqlite sqlite python-sqlite2 python-virtualenv
 
 
 Debian and Ubuntu
@@ -137,8 +137,18 @@ interface with IP ``192.168.0.101``. Set this according to your network
 configuration or omit this option completely to make PowerDNS bind on all
 available network interfaces.
 
+.. note::
+
+    If you try to run the server as an unprivileged user, you will probably
+    encounter permission issues. In such a case, you can bind PowerDNS to a
+    port number greater than 1024 and also instruct it to create its
+    control socket in the current directory. For example::
+    
+        pdns_server --local-address=192.168.0.220 --local-port=5353 --config-dir=`pwd` --socket-dir=`pwd`
+
 The output above indicates that everything is running fine, so stop this
-process by pressing ``Ctrl-C`` and start PowerDNS in the **background**::
+process by pressing ``Ctrl-C`` and start PowerDNS in the **background** by adding
+``--daemon`` to the command line arguments. For example::
 
     pdns_server --daemon --local-address=192.168.0.101 --config-dir=`pwd`
 

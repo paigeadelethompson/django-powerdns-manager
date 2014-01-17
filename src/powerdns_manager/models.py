@@ -161,7 +161,7 @@ class Domain(models.Model):
         html_link = '<a href="%s"><strong>export zone</strong></a>' % reverse('export_zone', kwargs={'origin': self.name})
         return html_link
     export_zone_html_link.allow_tags = True
-    export_zone_html_link.short_description = 'Export'
+    export_zone_html_link.short_description = 'Export zone file'
 
 signal_cb.zone_saved.connect(signal_cb.rectify_zone_cb, sender=Domain)
 signal_cb.zone_saved.connect(signal_cb.update_zone_serial_cb, sender=Domain)
@@ -184,15 +184,18 @@ class Record(models.Model):
     for enabled_rr_type in settings.PDNS_ENABLED_RR_TYPES:
         RECORD_TYPE_CHOICES.append( (enabled_rr_type, enabled_rr_type) )
 
+    # domain -> specs state 'default null'. Consider adding: null=True
     domain = models.ForeignKey('powerdns_manager.Domain', related_name='%(app_label)s_%(class)s_domain', verbose_name=_('domain'), help_text=_("""Select the domain this record belongs to."""))
     name = models.CharField(max_length=255, null=True, db_index=True, verbose_name=_('name'), help_text="""Actual name of a record. Must not end in a '.' and be fully qualified - it is not relative to the name of the domain!  For example: www.test.com (no trailing dot)""")
     # See section 8.5 about why the type field allows NULL. (PowerDNS 3.2 and above)
+    # Has db_index=True, without specs specifying so.
     type = models.CharField(max_length=10, null=True, db_index=True, choices=RECORD_TYPE_CHOICES, verbose_name=_('type'), help_text="""Select the type of the resource record.""")
-    content = models.CharField(max_length=255, null=True, verbose_name=_('content'), help_text="""This is the 'right hand side' of a DNS record. For an A record, this is the IP address for example.""")
+    content = models.CharField(max_length=64000, null=True, verbose_name=_('content'), help_text="""This is the 'right hand side' of a DNS record. For an A record, this is the IP address for example.""")
     ttl = models.PositiveIntegerField(max_length=11, blank=True, null=True, verbose_name=_('TTL'), help_text="""How long the DNS-client are allowed to remember this record. Also known as Time To Live(TTL) This value is in seconds.""")
     prio = models.PositiveIntegerField(max_length=11, null=True, verbose_name=_('priority'), help_text="""For MX records, this should be the priority of the mail exchanger specified.""")
     # Extra fields for DNSSEC (http://doc.powerdns.com/dnssec-modes.html#dnssec-direct-database)
     auth = models.NullBooleanField(verbose_name=_('authoritative'), help_text="""The 'auth' field should be set to '1' for data for which the zone itself is authoritative, which includes the SOA record and its own NS records. The 'auth' field should be 0 however for NS records which are used for delegation, and also for any glue (A, AAAA) records present for this purpose. Do note that the DS record for a secure delegation should be authoritative!""")
+    # 'ordername' allows NULL to facilitate late calculation
     ordername = models.CharField(max_length=255, null=True, db_index=True, verbose_name=_('ordername'), help_text="""http://doc.powerdns.com/dnssec-modes.html#dnssec-direct-database""")
     
     # This is set to the current timestamp on every save
@@ -206,7 +209,11 @@ class Record(models.Model):
         verbose_name = _('record')
         verbose_name_plural = _('records')
         get_latest_by = 'date_modified'
-        ordering = ['type']
+        ordering = ['name', 'type']
+        index_together = [
+            ['name', 'type'],
+            ['domain', 'ordername'],
+        ]
         # The following index is created by a MySQL statement in ``sql/record.mysql.sql``
         #     CREATE INDEX nametype_index ON records(name,type);
         # SEE: http://stackoverflow.com/questions/1578195/django-create-index-non-unique-multiple-column
@@ -221,7 +228,7 @@ class Record(models.Model):
         The following actions are performed:
         
         1) Sets the current timestamp to the ``change_date`` field. This is
-        used by PowerDNS.
+        used by PowerDNS. (Empty non-terminals are excluded)
         
         2) Sets the TTL of the resource record(s), if missing. Since
         ``get_minimum_ttl()`` retrieves the minimum TTL from the SOA record,
@@ -233,10 +240,12 @@ class Record(models.Model):
         4) Set the ``ordername`` field. Needed by PowerDNS internals.
         
         """
-        self.change_date = generate_serial_timestamp()
+        if self.type is not None:   # Exclude empty non-terminals
+            
+            self.change_date = generate_serial_timestamp()
         
-        if not self.ttl:
-            self.ttl = self.domain.get_minimum_ttl()
+            if not self.ttl:
+                self.ttl = self.domain.get_minimum_ttl()
         
         # auth and ordername fields are set automatically after the zone and
         # all records have been saved. See: admin.DomainAdmin.save_related()
@@ -263,8 +272,9 @@ class SuperMaster(models.Model):
     This table is an authorization table for the IP/nameserver. 
 
     """
-    ip = models.GenericIPAddressField(verbose_name=_('IP address'), help_text="""IP address for supermaster (IPv4 or IPv6).""")
-    # TODO: added unique --- check if OK
+    # TODO: added ``unique=True`` to ``ip`` because it is set as primary key
+    ip = models.GenericIPAddressField(unique=True, verbose_name=_('IP address'), help_text="""IP address for supermaster (IPv4 or IPv6).""")
+    # TODO: added ``unique=True`` to ``nameserver`` because it is set as primary key
     nameserver = models.CharField(max_length=255, unique=True, verbose_name=_('nameserver'), help_text="""Hostname of the supermaster.""")
     account = models.CharField(max_length=40, blank=True, null=True, verbose_name=_('account'), help_text="""Account name (???)""")
 
@@ -302,8 +312,9 @@ class DomainMetadata(models.Model):
         ('SOA-EDIT', 'SOA-EDIT'),
         ('TSIG-ALLOW-AXFR', 'TSIG-ALLOW-AXFR'),
     )
-    domain = models.ForeignKey('powerdns_manager.Domain', related_name='%(app_label)s_%(class)s_domain', verbose_name=_('domain'), help_text=_("""Select the domain this record belongs to."""))
+    domain = models.ForeignKey('powerdns_manager.Domain', related_name='%(app_label)s_%(class)s_domain', db_index=True, verbose_name=_('domain'), help_text=_("""Select the domain this record belongs to."""))
     kind = models.CharField(max_length=16, choices=PER_ZONE_METADATA_CHOICES, verbose_name=_('setting'), help_text="""Select a setting.""")
+    # TODO: Check if content may be empty
     content = models.TextField(blank=True, null=True, verbose_name=_('content'), help_text="""Enter the metadata.""")
     
     # PowerDNS Manager internal fields
@@ -327,7 +338,7 @@ class CryptoKey(models.Model):
     See: http://doc.powerdns.com/dnssec-supported.html
     
     """
-    domain = models.ForeignKey('powerdns_manager.Domain', related_name='%(app_label)s_%(class)s_domain', verbose_name=_('domain'), help_text=_("""Select the domain this record belongs to."""))
+    domain = models.ForeignKey('powerdns_manager.Domain', related_name='%(app_label)s_%(class)s_domain', db_index=True, verbose_name=_('domain'), help_text=_("""Select the domain this record belongs to."""))
     flags = models.PositiveIntegerField(verbose_name=_('flags'), help_text="""Key flags.""")
     active = models.BooleanField(verbose_name=_('active'), help_text="""Check to activate key.""")
     # TODO: Check if content may be empty
@@ -394,7 +405,7 @@ class DynamicZone(models.Model):
     """
     domain = models.ForeignKey('powerdns_manager.Domain', unique=True, related_name='%(app_label)s_%(class)s_domain', verbose_name=_('domain'), help_text=_("""Select the domain, the A and AAAA records of which might be updated dynamically over HTTP."""))
     is_dynamic = models.BooleanField(verbose_name=_('Dynamic zone'), help_text="""Check to mark this zone as dynamic. An API key will be generated for you so as to be able to update the A nd AAAA records IP addresses over HTTP.""")
-    api_key = models.CharField(max_length=24, null=True, verbose_name=_('API Key'), help_text="""The API key is generated automatically. To reset it, use the relevant action in the changelist view.""")
+    api_key = models.CharField(max_length=64, null=True, verbose_name=_('API Key'), help_text="""The API key is generated automatically. To reset it, use the relevant action in the changelist view.""")
     date_modified = models.DateTimeField(auto_now=True, verbose_name=_('Last Modified'))
     
     class Meta:
@@ -423,4 +434,32 @@ class DynamicZone(models.Model):
             self.api_key = None
         
         return super(DynamicZone, self).save(*args, **kwargs)
+
+
+
+class ZoneTemplate(models.Model):
+    """Model for zone templates.
+    
+    """
+    name = models.CharField(max_length=100, verbose_name=_('name'), help_text="""Enter a name for the template.""")
+    content = models.TextField(blank=True, null=True, verbose_name=_('content'), help_text="""Enter the template content. The placeholder #origin# is expanded to the origin of the zone to which the template is applied.""")
+    notes = models.TextField(blank=True, null=True, verbose_name=_('notes'), help_text="""Space for notes about the template.""")
+    
+    # PowerDNS Manager internal fields
+    date_modified = models.DateTimeField(auto_now=True, verbose_name=_('Last Modified'))
+    created_by = models.ForeignKey(AUTH_USER_MODEL, related_name='%(app_label)s_%(class)s_created_by', verbose_name=_('template creator'), help_text="""The Django user this template belongs to.""")
+    
+    class Meta:
+        db_table = 'zonetemplates'
+        verbose_name = _('template')
+        verbose_name_plural = _('templates')
+        get_latest_by = 'date_modified'
+        ordering = ['name', 'date_modified']
+        unique_together = (
+            ('name', 'created_by'),
+        )
+        
+    def __unicode__(self):
+        return self.name
+
 
