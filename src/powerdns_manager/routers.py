@@ -102,7 +102,7 @@ class PowerdnsManagerDbRouter(object):
             return True
         return None
 
-    def allow_syncdb(self, db, model):
+    def allow_migrate(self, db, model):
         """Make sure the powerdns_manager app only appears on the 'powerdns' db"""
         if db == 'powerdns':
             return model._meta.app_label == 'powerdns_manager'
