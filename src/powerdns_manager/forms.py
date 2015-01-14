@@ -46,7 +46,7 @@ class DomainModelForm(forms.ModelForm):
     """
     class Meta:
         model = cache.get_model('powerdns_manager', 'Domain')
-        exclude = []
+        fields = '__all__'
         
     def clean_name(self):
         name = self.cleaned_data.get('name')
@@ -75,7 +75,7 @@ class BaseRecordModelForm(forms.ModelForm):
     """
     class Meta:
         model = cache.get_model('powerdns_manager', 'Record')
-        exclude = []
+        fields = '__all__'
     
     def clean(self):
         """ModelForm clean code for all Record ModelForms.
