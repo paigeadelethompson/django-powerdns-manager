@@ -95,7 +95,7 @@ class BaseTabularRecordInline(admin.TabularInline):
         
     def get_queryset(self, request):
         """Return only RR_TYPE records"""
-        qs = super(BaseTabularRecordInline, self).queryset(request)
+        qs = super(BaseTabularRecordInline, self).get_queryset(request)
         return qs.filter(type=self.RR_TYPE)
 
 
@@ -115,7 +115,7 @@ class SoaRecordInline(admin.StackedInline):
     
     def get_queryset(self, request):
         """Return only SOA records"""
-        qs = super(SoaRecordInline, self).queryset(request)
+        qs = super(SoaRecordInline, self).get_queryset(request)
         return qs.filter(type='SOA')
 
 
@@ -221,7 +221,7 @@ class EmptyNonTerminalRecordInline(admin.TabularInline):
     
     def get_queryset(self, request):
         """Return only Empty Non-Terminal records"""
-        qs = super(EmptyNonTerminalRecordInline, self).queryset(request)
+        qs = super(EmptyNonTerminalRecordInline, self).get_queryset(request)
         return qs.filter(type__isnull=True)
 
 
@@ -316,7 +316,7 @@ class DomainAdmin(admin.ModelAdmin):
         return list_filter
     
     def get_queryset(self, request):
-        qs = super(DomainAdmin, self).queryset(request)
+        qs = super(DomainAdmin, self).get_queryset(request)
         if not request.user.is_superuser:
             # Non-superusers see the domains they have created
             qs = qs.filter(created_by=request.user)
@@ -389,7 +389,7 @@ class TsigKeyAdmin(admin.ModelAdmin):
     verbose_name_plural = 'TSIG Keys'
     
     def get_queryset(self, request):
-        qs = super(TsigKeyAdmin, self).queryset(request)
+        qs = super(TsigKeyAdmin, self).get_queryset(request)
         if not request.user.is_superuser:
             # Non-superusers see the records they have created
             qs = qs.filter(created_by=request.user)
@@ -426,7 +426,7 @@ class ZoneTemplateAdmin(admin.ModelAdmin):
     actions = [create_zone_from_template, ]
     
     def get_queryset(self, request):
-        qs = super(ZoneTemplateAdmin, self).queryset(request)
+        qs = super(ZoneTemplateAdmin, self).get_queryset(request)
         if not request.user.is_superuser:
             # Non-superusers see the templates they have created
             qs = qs.filter(created_by=request.user)
