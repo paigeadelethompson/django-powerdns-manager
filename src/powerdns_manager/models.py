@@ -297,6 +297,34 @@ class SuperMaster(models.Model):
         return self.nameserver
 
 
+class Comment(models.Model):
+    """Model for PowerDNS comments."""
+    
+    domain = models.ForeignKey('powerdns_manager.Domain', related_name='%(app_label)s_%(class)s_domain', db_index=True, verbose_name=_('domain'), help_text=_("""Select the domain this comment belongs to."""))
+    name = models.CharField(max_length=255, verbose_name=_('name'), help_text="""Enter a name for this comment.""")
+    type = models.CharField(max_length=10, verbose_name=_('type'), help_text="""Select the type of this comment.""")
+    modified_at = models.PositiveIntegerField(max_length=11, verbose_name=_('modified at'), help_text="""Timestamp for the last modification time.""")
+    account = models.CharField(max_length=40, verbose_name=_('account'), help_text="""Account name (???)""")
+    comment = models.CharField(max_length=64000, verbose_name=_('comment'), help_text="""Comment body.""")
+
+    # PowerDNS Manager internal fields
+    date_modified = models.DateTimeField(auto_now=True, verbose_name=_('Last Modified'))
+
+    class Meta:
+        db_table = 'comments'
+        verbose_name = _('comment')
+        verbose_name_plural = _('comments')
+        get_latest_by = 'date_modified'
+        ordering = ['type']
+        index_together = [
+            ['name', 'type'],
+            ['domain', 'modified_at'],
+        ]
+        
+    def __unicode__(self):
+        return self.name
+
+
 class DomainMetadata(models.Model):
     """Model for PowerDNS domain metadata.
     
