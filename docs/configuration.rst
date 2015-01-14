@@ -65,13 +65,13 @@ the apps of the Django project, except ``django-powerdns-manager``. The
 PowerDNS should also be configured to send queries to ``powerdns.db``.
 
 
-Synchronize the project databases
----------------------------------
+Migrate the project databases
+-----------------------------
 
-Finally, synchronize the project's databases using the following command::
+Migrate the project's databases using the following command::
 
-    python manage.py syncdb
-    python manage.py syncdb --database=powerdns
+    python manage.py migrate
+    python manage.py migrate --database=powerdns
 
 
 URLS
@@ -89,7 +89,7 @@ your project::
 Load default group
 ==================
 
-This step is **optional**.
+This step is **optional**, but recommended for multiuser environments..
 
 *django-powerdns-manager* supports multiple users. Before non-superusers are
 able to add DNS data, a superuser must grant them permission to do so. In a

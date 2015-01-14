@@ -36,7 +36,7 @@ and have changed to the ``example`` directory::
 Install required software
 =========================
 
-The recommended version of PowerDNS is 3.3.1.
+The recommended version of PowerDNS is 3.4.1.
 
 Install the required software by following the operating system specific
 instructions below.
@@ -88,7 +88,7 @@ Populate the database
 
 First, populate the Django project's database::
 
-    python manage.py syncdb
+    python manage.py migrate
 
 You will be prompted to create a superuser. Create this user and take a note
 of the username and password as this is what you will use to log into the
@@ -96,7 +96,7 @@ web based administration interface.
 
 Finally, populate the dedicated django-powerdns-manager database::
 
-    python manage.py syncdb --database=powerdns
+    python manage.py migrate --database=powerdns
 
 Optional step: load the default 'PowerDNS Managers' group to make it easier to
 to test the interface using multiple users::

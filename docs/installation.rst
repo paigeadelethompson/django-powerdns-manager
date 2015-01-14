@@ -28,6 +28,10 @@ django-powerdns-manager distribution package. If ``pip`` is used to install this
 then all these dependencies will also be installed, if they are not already
 installed in your system.
 
+*django-powerdns-manager* supports the database DNSSEC schema of PowerDNS_ **v3.4.1**.
+
+.. _PowerDNS: http://www.powerdns.com
+
 
 Download
 ========
