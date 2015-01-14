@@ -86,7 +86,7 @@ class BaseTabularRecordInline(admin.TabularInline):
     form = '__OVERRIDE__'
     model = cache.get_model('powerdns_manager', 'Record')
     extra = 0
-    fields = ('name', 'ttl', 'content')
+    fields = ('name', 'ttl', 'content', 'disabled')
     
     def __init__(self, *args, **kwargs):
         self.verbose_name = '%s Resource Record' % self.RR_TYPE
@@ -239,6 +239,11 @@ class CryptoKeyInline(admin.TabularInline):
     verbose_name_plural = 'Crypto Keys'
 
 
+class CommentInline(admin.StackedInline):
+    model = cache.get_model('powerdns_manager', 'Comment')
+    fields = ('name', 'type', 'modified_at', 'account', 'comment')
+    extra = 0
+    verbose_name_plural = 'Comments'
 
 
 class DomainAdmin(admin.ModelAdmin):
@@ -296,6 +301,7 @@ class DomainAdmin(admin.ModelAdmin):
     #inlines.append(EmptyNonTerminalRecordInline)
     inlines.append(DomainMetadataInline)
     inlines.append(CryptoKeyInline)
+    #inlines.append(CommentInline)
     
     def get_list_display(self, request):
         list_display = ['name', 'export_zone_html_link', 'type', 'master', 'date_modified']
