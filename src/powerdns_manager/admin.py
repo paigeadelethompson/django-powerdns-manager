@@ -93,7 +93,7 @@ class BaseTabularRecordInline(admin.TabularInline):
         self.verbose_name_plural = '%s Resource Records' % self.RR_TYPE
         super(BaseTabularRecordInline, self).__init__(*args, **kwargs)
         
-    def queryset(self, request):
+    def get_queryset(self, request):
         """Return only RR_TYPE records"""
         qs = super(BaseTabularRecordInline, self).queryset(request)
         return qs.filter(type=self.RR_TYPE)
@@ -113,7 +113,7 @@ class SoaRecordInline(admin.StackedInline):
     fields = ('ttl', 'primary', 'hostmaster', 'serial', 'refresh', 'retry', 'expire', 'default_ttl')
     can_delete = False
     
-    def queryset(self, request):
+    def get_queryset(self, request):
         """Return only SOA records"""
         qs = super(SoaRecordInline, self).queryset(request)
         return qs.filter(type='SOA')
@@ -219,7 +219,7 @@ class EmptyNonTerminalRecordInline(admin.TabularInline):
     readonly_fields = ('name', 'type', 'content', 'ttl', 'prio', 'auth', 'ordername', 'change_date')
     can_delete = False
     
-    def queryset(self, request):
+    def get_queryset(self, request):
         """Return only Empty Non-Terminal records"""
         qs = super(EmptyNonTerminalRecordInline, self).queryset(request)
         return qs.filter(type__isnull=True)
@@ -309,7 +309,7 @@ class DomainAdmin(admin.ModelAdmin):
             list_filter.append('created_by')
         return list_filter
     
-    def queryset(self, request):
+    def get_queryset(self, request):
         qs = super(DomainAdmin, self).queryset(request)
         if not request.user.is_superuser:
             # Non-superusers see the domains they have created
@@ -382,7 +382,7 @@ class TsigKeyAdmin(admin.ModelAdmin):
     verbose_name = 'TSIG Key'
     verbose_name_plural = 'TSIG Keys'
     
-    def queryset(self, request):
+    def get_queryset(self, request):
         qs = super(TsigKeyAdmin, self).queryset(request)
         if not request.user.is_superuser:
             # Non-superusers see the records they have created
@@ -419,7 +419,7 @@ class ZoneTemplateAdmin(admin.ModelAdmin):
     verbose_name_plural = _('templates')
     actions = [create_zone_from_template, ]
     
-    def queryset(self, request):
+    def get_queryset(self, request):
         qs = super(ZoneTemplateAdmin, self).queryset(request)
         if not request.user.is_superuser:
             # Non-superusers see the templates they have created
