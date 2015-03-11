@@ -75,7 +75,7 @@ class Domain(models.Model):
 
     # PowerDNS Manager internal fields
     #date_created = models.DateTimeField(auto_now_add=True, verbose_name=_('Created on'))
-    date_modified = models.DateTimeField(auto_now=True, verbose_name=_('Last Modified'))
+    date_modified = models.DateTimeField(auto_now=True, null=True, verbose_name=_('Last Modified'))
     created_by = models.ForeignKey(AUTH_USER_MODEL, related_name='%(app_label)s_%(class)s_created_by', null=True, verbose_name=_('owner username'), help_text="""The Django user this zone belongs to.""")
     
     class Meta:
@@ -203,7 +203,7 @@ class Record(models.Model):
     change_date = models.PositiveIntegerField(max_length=11, null=True, verbose_name=_('change date'), help_text="""Timestamp for the last update. This is used by PowerDNS internally.""")
 
     # PowerDNS Manager internal fields
-    date_modified = models.DateTimeField(auto_now=True, verbose_name=_('Last Modified'))
+    date_modified = models.DateTimeField(auto_now=True, null=True, verbose_name=_('Last Modified'))
 
     class Meta:
         db_table = 'records'
