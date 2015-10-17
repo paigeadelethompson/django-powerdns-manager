@@ -68,9 +68,9 @@ class Domain(models.Model):
     )
     name = models.CharField(max_length=255, unique=True, db_index=True, verbose_name=_('name'), help_text="""This field is the actual domainname. This is the field that powerDNS matches to when it gets a request. The domainname should be in the format of: domainname.TLD (no trailing dot)""")
     master = models.CharField(max_length=128, blank=True, null=True, verbose_name=_('master'), help_text="""Enter a comma delimited list of nameservers that are master for this domain. This setting applies only to slave zones.""")
-    last_check = models.PositiveIntegerField(max_length=11, null=True, verbose_name=_('last check'), help_text="""Last time this domain was checked for freshness.""")
+    last_check = models.PositiveIntegerField(null=True, verbose_name=_('last check'), help_text="""Last time this domain was checked for freshness.""")
     type = models.CharField(max_length=6, choices=DOMAIN_TYPE_CHOICES, default=settings.PDNS_DEFAULT_ZONE_TYPE, verbose_name=_('type'), help_text="""Select the zone type. Native refers to native SQL replication. Master/Slave refers to DNS server based zone transfers.""")
-    notified_serial = models.PositiveIntegerField(max_length=11, null=True, verbose_name=_('notified serial'), help_text="""The last notified serial of a master domain. This is updated from the SOA record of the domain.""")
+    notified_serial = models.PositiveIntegerField(null=True, verbose_name=_('notified serial'), help_text="""The last notified serial of a master domain. This is updated from the SOA record of the domain.""")
     account = models.CharField(max_length=40, blank=True, null=True, verbose_name=_('account'), help_text="""Determine if a certain host is a supermaster for a certain domain name. (???)""")
 
     # PowerDNS Manager internal fields
@@ -191,8 +191,8 @@ class Record(models.Model):
     # Has db_index=True, without specs specifying so.
     type = models.CharField(max_length=10, null=True, db_index=True, choices=RECORD_TYPE_CHOICES, verbose_name=_('type'), help_text="""Select the type of the resource record.""")
     content = models.CharField(max_length=64000, null=True, verbose_name=_('content'), help_text="""This is the 'right hand side' of a DNS record. For an A record, this is the IP address for example.""")
-    ttl = models.PositiveIntegerField(max_length=11, blank=True, null=True, verbose_name=_('TTL'), help_text="""How long the DNS-client are allowed to remember this record. Also known as Time To Live(TTL) This value is in seconds.""")
-    prio = models.PositiveIntegerField(max_length=11, null=True, verbose_name=_('priority'), help_text="""For MX records, this should be the priority of the mail exchanger specified.""")
+    ttl = models.PositiveIntegerField(blank=True, null=True, verbose_name=_('TTL'), help_text="""How long the DNS-client are allowed to remember this record. Also known as Time To Live(TTL) This value is in seconds.""")
+    prio = models.PositiveIntegerField(null=True, verbose_name=_('priority'), help_text="""For MX records, this should be the priority of the mail exchanger specified.""")
     disabled = models.BooleanField(default=False, verbose_name=_('disabled'), help_text="""Enable or disable this Resource Record.""")
     # Extra fields for DNSSEC (http://doc.powerdns.com/dnssec-modes.html#dnssec-direct-database)
     auth = models.NullBooleanField(verbose_name=_('authoritative'), help_text="""The 'auth' field should be set to '1' for data for which the zone itself is authoritative, which includes the SOA record and its own NS records. The 'auth' field should be 0 however for NS records which are used for delegation, and also for any glue (A, AAAA) records present for this purpose. Do note that the DS record for a secure delegation should be authoritative!""")
@@ -200,7 +200,7 @@ class Record(models.Model):
     ordername = models.CharField(max_length=255, null=True, db_index=True, verbose_name=_('ordername'), help_text="""http://doc.powerdns.com/dnssec-modes.html#dnssec-direct-database""")
     
     # This is set to the current timestamp on every save
-    change_date = models.PositiveIntegerField(max_length=11, null=True, verbose_name=_('change date'), help_text="""Timestamp for the last update. This is used by PowerDNS internally.""")
+    change_date = models.PositiveIntegerField(null=True, verbose_name=_('change date'), help_text="""Timestamp for the last update. This is used by PowerDNS internally.""")
 
     # PowerDNS Manager internal fields
     date_modified = models.DateTimeField(auto_now=True, null=True, verbose_name=_('Last Modified'))
@@ -303,7 +303,7 @@ class Comment(models.Model):
     domain = models.ForeignKey('powerdns_manager.Domain', related_name='%(app_label)s_%(class)s_domain', db_index=True, verbose_name=_('domain'), help_text=_("""Select the domain this comment belongs to."""))
     name = models.CharField(max_length=255, verbose_name=_('name'), help_text="""Enter a name for this comment.""")
     type = models.CharField(max_length=10, verbose_name=_('type'), help_text="""Select the type of this comment.""")
-    modified_at = models.PositiveIntegerField(max_length=11, verbose_name=_('modified at'), help_text="""Timestamp for the last modification time.""")
+    modified_at = models.PositiveIntegerField(verbose_name=_('modified at'), help_text="""Timestamp for the last modification time.""")
     account = models.CharField(max_length=40, verbose_name=_('account'), help_text="""Account name (???)""")
     comment = models.CharField(max_length=64000, verbose_name=_('comment'), help_text="""Comment body.""")
 
@@ -432,7 +432,7 @@ class DynamicZone(models.Model):
     address is dynamic.
     
     """
-    domain = models.ForeignKey('powerdns_manager.Domain', unique=True, related_name='%(app_label)s_%(class)s_domain', verbose_name=_('domain'), help_text=_("""Select the domain, the A and AAAA records of which might be updated dynamically over HTTP."""))
+    domain = models.OneToOneField('powerdns_manager.Domain', related_name='%(app_label)s_%(class)s_domain', verbose_name=_('domain'), help_text=_("""Select the domain, the A and AAAA records of which might be updated dynamically over HTTP."""))
     is_dynamic = models.BooleanField(default=False, verbose_name=_('Dynamic zone'), help_text="""Check to mark this zone as dynamic. An API key will be generated for you so as to be able to update the A nd AAAA records IP addresses over HTTP.""")
     api_key = models.CharField(max_length=64, null=True, verbose_name=_('API Key'), help_text="""The API key is generated automatically. To reset it, use the relevant action in the changelist view.""")
     date_modified = models.DateTimeField(auto_now=True, verbose_name=_('Last Modified'))
