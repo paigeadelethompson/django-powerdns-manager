@@ -18,9 +18,9 @@ exists in the license_ section.
 .. note::
 
     The following table includes some unofficial information about the compatibility
-    of this project with Django and PowerDNS releases. This information comes without
-    any warranty of correctness. Please, test the releases in your environment in
-    in order to ensure that all pieces work together as expected.
+    of *django-powerdns-manager* with *Django* and *PowerDNS* releases. This information
+    comes without any warranty of correctness. Please, test the releases in your
+    environment in order to ensure that all pieces work together as expected.
     
     =======================  ======  ========
     django-powerdns-manager  Django  PowerDNS
