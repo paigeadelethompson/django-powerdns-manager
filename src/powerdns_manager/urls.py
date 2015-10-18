@@ -24,20 +24,22 @@
 #  limitations under the License.
 #
 
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
+from powerdns_manager import views
 
-urlpatterns = patterns('powerdns_manager.views',
+
+urlpatterns = [
     # Client IP
-    url(r'^tools/getip/$', 'tools_getip_view', name='tools_getip'),
+    url(r'^tools/getip/$', views.tools_getip_view, name='tools_getip'),
     # Zone tools
-    url(r'^zone/import/zonefile/$', 'import_zone_view', name='import_zone'),
-    url(r'^zone/import/axfr/$', 'import_axfr_view', name='import_axfr'),
-    url(r'^zone/export/(?P<origin>[/.\-_\w]+)/$', 'export_zone_view', name='export_zone'),
-    url(r'^zone/update/$', 'dynamic_ip_update_view', name='dynamic_ip_update'),
-    url(r'^zone/set-type/(?P<id_list>[0-9,]+)/$', 'zone_set_type_view', name='zone_set_type'),
-    url(r'^zone/set-ttl/(?P<id_list>[0-9,]+)/$', 'zone_set_ttl_view', name='zone_set_ttl'),
-    url(r'^zone/clone/(?P<zone_id>[0-9]+)/$', 'zone_clone_view', name='zone_clone'),
-    url(r'^zone/transfer/(?P<id_list>[0-9,]+)/$', 'zone_transfer_view', name='zone_transfer'),
+    url(r'^zone/import/zonefile/$', views.import_zone_view, name='import_zone'),
+    url(r'^zone/import/axfr/$', views.import_axfr_view, name='import_axfr'),
+    url(r'^zone/export/(?P<origin>[/.\-_\w]+)/$', views.export_zone_view, name='export_zone'),
+    url(r'^zone/update/$', views.dynamic_ip_update_view, name='dynamic_ip_update'),
+    url(r'^zone/set-type/(?P<id_list>[0-9,]+)/$', views.zone_set_type_view, name='zone_set_type'),
+    url(r'^zone/set-ttl/(?P<id_list>[0-9,]+)/$', views.zone_set_ttl_view, name='zone_set_ttl'),
+    url(r'^zone/clone/(?P<zone_id>[0-9]+)/$', views.zone_clone_view, name='zone_clone'),
+    url(r'^zone/transfer/(?P<id_list>[0-9,]+)/$', views.zone_transfer_view, name='zone_transfer'),
     # Template tools
-    url(r'^template/create-zone/(?P<template_id>[0-9]+)/$', 'template_create_zone_view', name='template_create_zone'),
-)
+    url(r'^template/create-zone/(?P<template_id>[0-9]+)/$', views.template_create_zone_view, name='template_create_zone'),
+]

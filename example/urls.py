@@ -1,15 +1,14 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 
 from django.contrib import admin
 admin.autodiscover()
 
 # URLs for django.contrib.admin
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-)
+]
 
 # URLs for powerdns_manager
-urlpatterns += patterns('',
+urlpatterns.append(
     url('^powerdns/', include('powerdns_manager.urls')),
 )
-

@@ -81,7 +81,7 @@ Add the ``powerdns_manager`` specific URL patterns to the ``urls.py`` file of
 your project::
 
     # URLs for powerdns_manager
-    urlpatterns += patterns('',
+    urlpatterns.append(
         url('^powerdns/', include('powerdns_manager.urls')),
     )
 
