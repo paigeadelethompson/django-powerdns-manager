@@ -29,7 +29,12 @@ import sys
 from optparse import make_option
 
 from django.core.management.base import BaseCommand, CommandError
-from django.db.models.loading import cache
+try:
+    from django.apps import apps
+    get_model = apps.get_model
+except ImportError:
+    from django.db.models.loading import cache
+    get_model = cache.get_model
 
 from powerdns_manager.utils import generate_zone_file
 
@@ -56,7 +61,7 @@ class Command(BaseCommand):
         if export_all and len(origins) > 0:
             raise CommandError('No origins should be specified when the --all switch is used.')
         
-        Domain = cache.get_model('powerdns_manager', 'Domain')
+        Domain = get_model('powerdns_manager', 'Domain')
         if export_all:
             origins = [d.name for d in Domain.objects.all()]
         

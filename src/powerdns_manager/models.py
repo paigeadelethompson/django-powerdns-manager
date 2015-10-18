@@ -27,7 +27,12 @@
 from django.db import models
 from django.db.models import signals
 from django.utils.translation import ugettext_lazy as _
-from django.db.models.loading import cache
+try:
+    from django.apps import apps
+    get_model = apps.get_model
+except ImportError:
+    from django.db.models.loading import cache
+    get_model = cache.get_model
 from django.core.urlresolvers import reverse
 from django.conf import settings as django_settings
 
@@ -107,7 +112,7 @@ class Domain(models.Model):
         is returned from the settings..
         
         """
-        Record = cache.get_model('powerdns_manager', 'Record')
+        Record = get_model('powerdns_manager', 'Record')
         try:
             soa_rr = Record.objects.get(domain=self, type='SOA')
         except Record.DoesNotExist:
@@ -129,7 +134,7 @@ class Domain(models.Model):
         TODO: Investigate whether it is needed to perform any checks against settings.PDNS_DEFAULT_RR_TTL
         
         """
-        Record = cache.get_model('powerdns_manager', 'Record')
+        Record = get_model('powerdns_manager', 'Record')
         try:
             soa_rr = Record.objects.get(domain=self, type='SOA')
         except Record.DoesNotExist:
@@ -146,7 +151,7 @@ class Domain(models.Model):
         SOA content:  primary hostmaster serial refresh retry expire default_ttl
         
         """
-        Record = cache.get_model('powerdns_manager', 'Record')
+        Record = get_model('powerdns_manager', 'Record')
         try:
             soa_rr = Record.objects.get(domain=self, type='SOA')
         except Record.DoesNotExist:

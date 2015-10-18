@@ -25,7 +25,12 @@
 #
 
 from django.contrib import admin
-from django.db.models.loading import cache
+try:
+    from django.apps import apps
+    get_model = apps.get_model
+except ImportError:
+    from django.db.models.loading import cache
+    get_model = cache.get_model
 from django.contrib import messages
 from django.contrib.admin import SimpleListFilter
 from django.utils.translation import ugettext_lazy as _
@@ -68,7 +73,7 @@ from powerdns_manager.actions import create_zone_from_template
 
 
 class DynamicZoneInline(admin.StackedInline):
-    model = cache.get_model('powerdns_manager', 'DynamicZone')
+    model = get_model('powerdns_manager', 'DynamicZone')
     fields = ('is_dynamic', 'api_key')
     readonly_fields = ('api_key', )
     search_fields = ('domain', )
@@ -84,7 +89,7 @@ class DynamicZoneInline(admin.StackedInline):
 class BaseTabularRecordInline(admin.TabularInline):
     RR_TYPE = '__OVERRIDE__'
     form = '__OVERRIDE__'
-    model = cache.get_model('powerdns_manager', 'Record')
+    model = get_model('powerdns_manager', 'Record')
     extra = 0
     fields = ('name', 'ttl', 'content', 'disabled')
     
@@ -101,7 +106,7 @@ class BaseTabularRecordInline(admin.TabularInline):
 
 
 class SoaRecordInline(admin.StackedInline):
-    model = cache.get_model('powerdns_manager', 'Record')
+    model = get_model('powerdns_manager', 'Record')
     form = SoaRecordModelForm
     # Show exactly one form
     extra = 1
@@ -211,7 +216,7 @@ class EmptyNonTerminalRecordInline(admin.TabularInline):
     See: http://doc.powerdns.com/dnssec-modes.html#dnssec-direct-database
     
     """
-    model = cache.get_model('powerdns_manager', 'Record')
+    model = get_model('powerdns_manager', 'Record')
     extra = 0
     verbose_name = 'Empty Non-Terminal Resource Record'
     verbose_name_plural = 'Empty Non-Terminal Resource Record' # Only one SOA RR per zone
@@ -226,21 +231,21 @@ class EmptyNonTerminalRecordInline(admin.TabularInline):
 
 
 class DomainMetadataInline(admin.TabularInline):
-    model = cache.get_model('powerdns_manager', 'DomainMetadata')
+    model = get_model('powerdns_manager', 'DomainMetadata')
     fields = ('kind', 'content', )
     extra = 0
     verbose_name_plural = 'Domain Metadata'
 
     
 class CryptoKeyInline(admin.TabularInline):
-    model = cache.get_model('powerdns_manager', 'CryptoKey')
+    model = get_model('powerdns_manager', 'CryptoKey')
     fields = ('flags', 'active', 'content')
     extra = 0
     verbose_name_plural = 'Crypto Keys'
 
 
 class CommentInline(admin.StackedInline):
-    model = cache.get_model('powerdns_manager', 'Comment')
+    model = get_model('powerdns_manager', 'Comment')
     fields = ('name', 'type', 'modified_at', 'account', 'comment')
     extra = 0
     verbose_name_plural = 'Comments'
@@ -369,13 +374,13 @@ class DomainAdmin(admin.ModelAdmin):
         elif "_set_rr_ttl" in request.POST:
             return HttpResponseRedirect(reverse('zone_set_ttl', args=(obj.id,)))
         elif "_reset_api_key" in request.POST:
-            Domain = cache.get_model('powerdns_manager', 'Domain')
+            Domain = get_model('powerdns_manager', 'Domain')
             qs = Domain.objects.filter(id=obj.id)
             reset_api_key(self, request, qs)
 
         return super(DomainAdmin, self).response_change(request, obj)
 
-admin.site.register(cache.get_model('powerdns_manager', 'Domain'), DomainAdmin)
+admin.site.register(get_model('powerdns_manager', 'Domain'), DomainAdmin)
 
 
 
@@ -400,7 +405,7 @@ class TsigKeyAdmin(admin.ModelAdmin):
             obj.created_by = request.user
         obj.save()
     
-admin.site.register(cache.get_model('powerdns_manager', 'TsigKey'), TsigKeyAdmin)
+admin.site.register(get_model('powerdns_manager', 'TsigKey'), TsigKeyAdmin)
 
 
 
@@ -412,7 +417,7 @@ class SuperMasterAdmin(admin.ModelAdmin):
     verbose_name = 'SuperMaster'
     verbose_name_plural = 'SuperMasters'
     
-admin.site.register(cache.get_model('powerdns_manager', 'SuperMaster'), SuperMasterAdmin)
+admin.site.register(get_model('powerdns_manager', 'SuperMaster'), SuperMasterAdmin)
 
 
 
@@ -437,6 +442,6 @@ class ZoneTemplateAdmin(admin.ModelAdmin):
             obj.created_by = request.user
         obj.save()
     
-admin.site.register(cache.get_model('powerdns_manager', 'ZoneTemplate'), ZoneTemplateAdmin)
+admin.site.register(get_model('powerdns_manager', 'ZoneTemplate'), ZoneTemplateAdmin)
 
 

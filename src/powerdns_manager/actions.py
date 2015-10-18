@@ -28,7 +28,12 @@ from django.http import HttpResponseRedirect
 from django.core.exceptions import PermissionDenied
 from django.contrib.admin import helpers
 from django.contrib import messages
-from django.db.models.loading import cache
+try:
+    from django.apps import apps
+    get_model = apps.get_model
+except ImportError:
+    from django.db.models.loading import cache
+    get_model = cache.get_model
 from django.core.urlresolvers import reverse
 
 from powerdns_manager.utils import generate_api_key
@@ -37,7 +42,7 @@ from powerdns_manager.utils import generate_api_key
 def reset_api_key(modeladmin, request, queryset):
     if not modeladmin.has_change_permission(request):
         raise PermissionDenied
-    DynamicZone = cache.get_model('powerdns_manager', 'DynamicZone')
+    DynamicZone = get_model('powerdns_manager', 'DynamicZone')
     n = queryset.count()
     for domain_obj in queryset:
         # Only one DynamicZone instance for each Domain

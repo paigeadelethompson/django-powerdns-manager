@@ -28,7 +28,12 @@ import time
 import re
 
 from django import forms
-from django.db.models.loading import cache
+try:
+    from django.apps import apps
+    get_model = apps.get_model
+except ImportError:
+    from django.db.models.loading import cache
+    get_model = cache.get_model
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import validate_ipv4_address
 from django.core.validators import validate_ipv6_address
@@ -45,7 +50,7 @@ class DomainModelForm(forms.ModelForm):
     
     """
     class Meta:
-        model = cache.get_model('powerdns_manager', 'Domain')
+        model = get_model('powerdns_manager', 'Domain')
         fields = '__all__'
         
     def clean_name(self):
@@ -74,7 +79,7 @@ class BaseRecordModelForm(forms.ModelForm):
     
     """
     class Meta:
-        model = cache.get_model('powerdns_manager', 'Record')
+        model = get_model('powerdns_manager', 'Record')
         fields = '__all__'
     
     def clean(self):
@@ -233,7 +238,7 @@ class SoaRecordModelForm(BaseRecordModelForm):
 #    the SOA resource record of the zone.
 #    
 #    """
-#    model = cache.get_model('powerdns_manager', 'Record')
+#    model = get_model('powerdns_manager', 'Record')
 #    
 #    @classmethod
 #    def get_default_prefix(cls):
@@ -571,7 +576,7 @@ class DynamicIPUpdateForm(forms.Form):
         if not re.match('^[A-Z0-9]+$', api_key):
             raise forms.ValidationError('Invalid API key')
         
-        DynamicZone = cache.get_model('powerdns_manager', 'DynamicZone')
+        DynamicZone = get_model('powerdns_manager', 'DynamicZone')
         try:
             DynamicZone.objects.get(api_key__exact=api_key)
         except DynamicZone.DoesNotExist:
@@ -626,7 +631,7 @@ class ClonedZoneDomainForm(forms.Form):
         validate_hostname(clone_domain_name, supports_cidr_notation=True)
         
         # 2) Check for uniqueness
-        Domain = cache.get_model('powerdns_manager', 'Domain')
+        Domain = get_model('powerdns_manager', 'Domain')
         try:
             domain_obj = Domain.objects.get(name=clone_domain_name)
         except Domain.DoesNotExist:
@@ -667,7 +672,7 @@ class TemplateOriginForm(forms.Form):
         validate_hostname(origin, supports_cidr_notation=True)
         
         # 2) Check for uniqueness
-        Domain = cache.get_model('powerdns_manager', 'Domain')
+        Domain = get_model('powerdns_manager', 'Domain')
         try:
             domain_obj = Domain.objects.get(name=origin)
         except Domain.DoesNotExist:

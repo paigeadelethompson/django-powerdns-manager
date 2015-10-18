@@ -39,7 +39,12 @@ from django.http import HttpResponseBadRequest
 from django.http import HttpResponseNotFound
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
-from django.db.models.loading import cache
+try:
+    from django.apps import apps
+    get_model = apps.get_model
+except ImportError:
+    from django.db.models.loading import cache
+    get_model = cache.get_model
 from django.utils.html import mark_safe
 from django.core.validators import validate_ipv4_address
 from django.core.validators import validate_ipv6_address
@@ -130,7 +135,7 @@ def import_axfr_view(request):
 @login_required
 def export_zone_view(request, origin):
     
-    Domain = cache.get_model('powerdns_manager', 'Domain')
+    Domain = get_model('powerdns_manager', 'Domain')
     
     obj = Domain.objects.get(name=origin)
     obj_display = force_unicode(obj)
@@ -229,8 +234,8 @@ def dynamic_ip_update_view(request):
     
     # All required data is good. Process the request.
     
-    DynamicZone = cache.get_model('powerdns_manager', 'DynamicZone')
-    Record = cache.get_model('powerdns_manager', 'Record')
+    DynamicZone = get_model('powerdns_manager', 'DynamicZone')
+    Record = get_model('powerdns_manager', 'Record')
     
     # Get the relevant dynamic zone instance
     dyn_zone = DynamicZone.objects.get(api_key__exact=api_key)
@@ -315,7 +320,7 @@ def zone_set_type_view(request, id_list):
     if request.method == 'POST':
         domain_type = request.POST.get('domaintype')
         
-        Domain = cache.get_model('powerdns_manager', 'Domain')
+        Domain = get_model('powerdns_manager', 'Domain')
         
         for n, zone_id in enumerate(id_list):
             obj = Domain.objects.get(id=zone_id)
@@ -377,8 +382,8 @@ def zone_set_ttl_view(request, id_list):
             new_ttl = form.cleaned_data['new_ttl']
             reset_zone_minimum = form.cleaned_data['reset_zone_minimum']
             
-            Domain = cache.get_model('powerdns_manager', 'Domain')
-            Record = cache.get_model('powerdns_manager', 'Record')
+            Domain = get_model('powerdns_manager', 'Domain')
+            Record = get_model('powerdns_manager', 'Record')
             
             record_count = 0
             
@@ -480,10 +485,10 @@ def zone_clone_view(request, zone_id):
             option_clone_metadata = form.cleaned_data['option_clone_metadata']
             
             # Get the models
-            Domain = cache.get_model('powerdns_manager', 'Domain')
-            Record = cache.get_model('powerdns_manager', 'Record')
-            DynamicZone = cache.get_model('powerdns_manager', 'DynamicZone')
-            DomainMetadata = cache.get_model('powerdns_manager', 'DomainMetadata')
+            Domain = get_model('powerdns_manager', 'Domain')
+            Record = get_model('powerdns_manager', 'Record')
+            DynamicZone = get_model('powerdns_manager', 'DynamicZone')
+            DomainMetadata = get_model('powerdns_manager', 'DomainMetadata')
             
             # Clone base zone
             
@@ -637,7 +642,7 @@ def zone_transfer_view(request, id_list):
             owner = User.objects.get(username=transfer_to_username)
             owner_display = force_unicode(owner)
             
-            Domain = cache.get_model('powerdns_manager', 'Domain')
+            Domain = get_model('powerdns_manager', 'Domain')
             
             for n, zone_id in enumerate(id_list):
                 obj = Domain.objects.get(id=zone_id)
@@ -704,8 +709,8 @@ def template_create_zone_view(request, template_id):
         origin = request.POST.get('origin')
         
         # Get the models
-        ZoneTemplate = cache.get_model('powerdns_manager', 'ZoneTemplate')
-        Domain = cache.get_model('powerdns_manager', 'Domain')
+        ZoneTemplate = get_model('powerdns_manager', 'ZoneTemplate')
+        Domain = get_model('powerdns_manager', 'Domain')
         
         template_obj = ZoneTemplate.objects.get(id=template_id)
         template_obj_display = force_unicode(template_obj)

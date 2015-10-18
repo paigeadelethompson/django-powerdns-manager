@@ -45,7 +45,12 @@ import dns.rdtypes.IN
 from dns.rdtypes.IN import *
 from dns.name import Name
 
-from django.db.models.loading import cache
+try:
+    from django.apps import apps
+    get_model = apps.get_model
+except ImportError:
+    from django.db.models.loading import cache
+    get_model = cache.get_model
 from django.utils.crypto import get_random_string
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_ipv46_address
@@ -268,8 +273,8 @@ def process_and_import_zone_data(zone, owner, overwrite=False):
     *****
     
     """
-    Domain = cache.get_model('powerdns_manager', 'Domain')
-    Record = cache.get_model('powerdns_manager', 'Record')
+    Domain = get_model('powerdns_manager', 'Domain')
+    Record = get_model('powerdns_manager', 'Record')
     
     # Check if zone already exists in the database.
     try:
@@ -396,8 +401,8 @@ def generate_zone_file(origin):
     associated with the domain with the provided origin.
     
     """
-    Domain = cache.get_model('powerdns_manager', 'Domain')
-    Record = cache.get_model('powerdns_manager', 'Record')
+    Domain = get_model('powerdns_manager', 'Domain')
+    Record = get_model('powerdns_manager', 'Record')
     
     the_domain = Domain.objects.get(name__exact=origin)
     the_rrs = Record.objects.filter(domain=the_domain).order_by('-type')
@@ -691,10 +696,10 @@ def rectify_zone(origin):
         ~~~~ PowerDNS Documentation at Chapter 12 Section 8.5
     
     """
-    Domain = cache.get_model('powerdns_manager', 'Domain')
-    Record = cache.get_model('powerdns_manager', 'Record')
-    DomainMetadata = cache.get_model('powerdns_manager', 'DomainMetadata')
-    CryptoKey = cache.get_model('powerdns_manager', 'CryptoKey')
+    Domain = get_model('powerdns_manager', 'Domain')
+    Record = get_model('powerdns_manager', 'Record')
+    DomainMetadata = get_model('powerdns_manager', 'DomainMetadata')
+    CryptoKey = get_model('powerdns_manager', 'CryptoKey')
     
     # List containing domain parts
     origin_parts = origin.split('.')
@@ -970,8 +975,8 @@ def pdnssec_hash_zone_record(zone_name, record_name):
       2-255 Available for assignment.
     """
     
-    Domain = cache.get_model('powerdns_manager', 'Domain')
-    DomainMetadata = cache.get_model('powerdns_manager', 'DomainMetadata')
+    Domain = get_model('powerdns_manager', 'Domain')
+    DomainMetadata = get_model('powerdns_manager', 'DomainMetadata')
     
     the_domain = Domain.objects.get(name__exact=zone_name)
     nsec3param = DomainMetadata.objects.get(domain=the_domain, kind='NSEC3PARAM')
