@@ -17,6 +17,21 @@ exists in the license_ section.
 
 .. note::
 
+    The following table includes some unofficial information about the compatibility
+    of this project with Django and PowerDNS releases. This information comes without
+    any warranty of correctness. Please, test the releases in your environment in
+    in order to ensure that all pieces work together as expected.
+    
+    =======================  ======  ========
+    django-powerdns-manager  Django  PowerDNS
+    =======================  ======  ========
+    0.2.1a1                  1.7.3   3.4.1
+    0.2.2a1                  1.8.5   3.4.6
+    =======================  ======  ========
+
+
+.. note::
+
    *django-powerdns-manager*, since version *0.2.0a1*, supports database migrations
    using the internal migrations mechanism of Django *1.7.3*. It is recommended
    to use the following commands instead of manually altering the database tables::
