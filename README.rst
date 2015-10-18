@@ -50,7 +50,6 @@ exists in the license_ section.
 Features
 ========
 
-- Supports Django 1.7.X and PowerDNS 3.4.1.
 - Web based administration interface based on the *admin* Django app.
 - Easy management of all records of a zone from a single web page.
 - Support for multiple users.
