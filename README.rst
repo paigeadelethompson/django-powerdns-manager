@@ -19,14 +19,17 @@ exists in the license_ section.
 
     The following table includes some unofficial information about the compatibility
     of *django-powerdns-manager* with *Django* and *PowerDNS* releases. This information
-    comes without any warranty of correctness. Please, test the releases in your
-    environment in order to ensure that all pieces work together as expected.
+    comes without any warranty of correctness. It indicates that the release has been
+    unofficially tested to work with the listed releases of Django and PowerDNS.
+    Please, test the releases in your environment in order to ensure that all
+    pieces work together as expected.
     
     =======================  ======  ========
     django-powerdns-manager  Django  PowerDNS
     =======================  ======  ========
-    0.2.1a1                  1.7.3   3.4.1
+    0.2.3a2                  1.9.4   3.4.8
     0.2.2a1                  1.8.5   3.4.6
+    0.2.1a1                  1.7.3   3.4.1
     =======================  ======  ========
 
 
@@ -40,7 +43,7 @@ exists in the license_ section.
        manage.py migrate --database=powerdns
    
    *django-powerdns-manager* should be considered **work in progress**. The
-   *0.2.Xa1* releases should be considered experimental. If you use it in
+   *0.2.XaN* releases should be considered experimental. If you use it in
    production, please make sure you test new releases before upgrading your
    production systems.
    
