@@ -7,7 +7,7 @@
 django-powerdns-manager's documentation
 =======================================
 
-Copyright 2012-2015 `George Notaras`_ <gnot@g-loaded.eu>
+Copyright 2012-2016 `George Notaras`_ <gnot@g-loaded.eu>
 
 .. _`George Notaras`: http://www.g-loaded.eu/
 
