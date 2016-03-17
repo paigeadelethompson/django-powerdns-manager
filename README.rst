@@ -50,6 +50,37 @@ exists in the license_ section.
    This software comes without any warranty of any kind. You are on your own.
 
 
+.. note::
+
+   This note demonstrates how to use the Django API to manage Domains (Zones)
+   and resource Records in bulk from the command line. Launch a Python shell
+   from your Django project's root directory with the following::
+
+       python manage.py shell
+
+   The following snippet assumes that the SPF policy is stored in TXT records.
+   It then resets the SPF policy to ``"v=spf1 mx -all"`` on all domains (zones)::
+   
+       # Import our models
+       from powerdns_manager.models import Record, Domain
+       # Fetch all TXT RRs that contain SPF policy.
+       rrset = Record.objects.filter(type='TXT', content__contains='v=spf1')
+       # Iterate over all RRs and reset the SPF policy.
+       for rr in rrset:
+           # Set the new SPF policy in the record's content. Notice the double quotes.
+           rr.content = '"v=spf1 mx -all"'
+           # Save the Resource Record.
+           rr.save()
+           # Update the zone's serial. We can access the domain (zone) as an
+           # attribute of the current resource record.
+           rr.domain.update_serial()
+   
+   Using the flexibility of the Python code and the Django API many complex
+   modifications can be done on the command line.
+   
+   Always make sure to test your code in a development environment.
+
+
 Features
 ========
 
