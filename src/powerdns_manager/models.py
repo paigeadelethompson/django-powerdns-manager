@@ -71,7 +71,7 @@ class Domain(models.Model):
         ('SLAVE', 'Slave'),
         #('SUPERSLAVE', 'Superslave'),
     )
-    name = models.CharField(max_length=255, unique=True, db_index=True, verbose_name=_('name'), help_text="""This field is the actual domainname. This is the field that powerDNS matches to when it gets a request. The domainname should be in the format of: domainname.TLD (no trailing dot)""")
+    name = models.CharField(max_length=255, unique=True, db_index=True, verbose_name=_('name'), help_text="""This field is the actual domain name. This is the field that powerDNS matches when it gets a request. The domainname should be in the format of: domainname.TLD (no trailing dot)""")
     master = models.CharField(max_length=128, blank=True, null=True, verbose_name=_('master'), help_text="""Enter a comma delimited list of nameservers that are master for this domain. This setting applies only to slave zones.""")
     last_check = models.PositiveIntegerField(null=True, verbose_name=_('last check'), help_text="""Last time this domain was checked for freshness.""")
     type = models.CharField(max_length=6, choices=DOMAIN_TYPE_CHOICES, default=settings.PDNS_DEFAULT_ZONE_TYPE, verbose_name=_('type'), help_text="""Select the zone type. Native refers to native SQL replication. Master/Slave refers to DNS server based zone transfers.""")
@@ -195,8 +195,8 @@ class Record(models.Model):
     # See section 8.5 about why the type field allows NULL. (PowerDNS 3.2 and above)
     # Has db_index=True, without specs specifying so.
     type = models.CharField(max_length=10, null=True, db_index=True, choices=RECORD_TYPE_CHOICES, verbose_name=_('type'), help_text="""Select the type of the resource record.""")
-    content = models.CharField(max_length=64000, null=True, verbose_name=_('content'), help_text="""This is the 'right hand side' of a DNS record. For an A record, this is the IP address for example.""")
-    ttl = models.PositiveIntegerField(blank=True, null=True, verbose_name=_('TTL'), help_text="""How long the DNS-client are allowed to remember this record. Also known as Time To Live(TTL) This value is in seconds.""")
+    content = models.CharField(max_length=64000, null=True, verbose_name=_('content'), help_text="""This is the actual content of a Resource Record. For instance, in case of an A record, this is the IP address.""")
+    ttl = models.PositiveIntegerField(blank=True, null=True, verbose_name=_('TTL'), help_text="""The time in seconds the DNS-clients are allowed to cache this record. Also known as Time To Live (TTL).""")
     prio = models.PositiveIntegerField(null=True, verbose_name=_('priority'), help_text="""For MX records, this should be the priority of the mail exchanger specified.""")
     disabled = models.BooleanField(default=False, verbose_name=_('disabled'), help_text="""Enable or disable this Resource Record.""")
     # Extra fields for DNSSEC (http://doc.powerdns.com/dnssec-modes.html#dnssec-direct-database)
