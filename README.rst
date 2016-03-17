@@ -67,7 +67,8 @@ exists in the license_ section.
        rrset = Record.objects.filter(type='TXT', content__contains='v=spf1')
        # Iterate over all RRs and reset the SPF policy.
        for rr in rrset:
-           # Set the new SPF policy in the record's content. Notice the double quotes.
+           # Set the new SPF policy in the record's content.
+           # Notice the double quotes.
            rr.content = '"v=spf1 mx -all"'
            # Save the Resource Record.
            rr.save()
