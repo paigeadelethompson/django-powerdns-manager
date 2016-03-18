@@ -42,10 +42,9 @@ exists in the license_ section.
        manage.py migrate
        manage.py migrate --database=powerdns
    
-   *django-powerdns-manager* should be considered **work in progress**. The
-   *0.2.XaN* releases should be considered experimental. If you use it in
-   production, please make sure you test new releases before upgrading your
-   production systems.
+   *django-powerdns-manager* should be considered **work in progress**. If you
+   use it in production, please make sure you test new releases before upgrading
+   your production systems.
    
    This software comes without any warranty of any kind. You are on your own.
 
