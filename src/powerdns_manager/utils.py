@@ -538,7 +538,7 @@ def generate_zone_file(origin):
             
     
     # Export text (from the source code of http://www.dnspython.org/docs/1.10.0/html/dns.zone.Zone-class.html#to_file)
-    EOL = '\r\n'
+    EOL = '\n'
     f = StringIO.StringIO()
     f.write('$ORIGIN %s%s' % (origin, EOL))
     zone.to_file(f, sorted=True, relativize=False, nl=EOL)
