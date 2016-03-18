@@ -53,7 +53,7 @@ exists in the license_ section.
 .. note::
 
    This note demonstrates how to use the Django API to manage Domains (Zones)
-   and resource Records in bulk from the command line. Launch a Python shell
+   and Resource Records in bulk from the command line. Launch a Python shell
    from your Django project's root directory with the following::
 
        python manage.py shell
