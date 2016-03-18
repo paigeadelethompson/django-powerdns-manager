@@ -349,7 +349,7 @@ def process_and_import_zone_data(zone, owner, overwrite=False):
                 elif rdataset.rdtype == dns.rdatatype._by_text['TXT']:
                     # http://www.dnspython.org/docs/1.10.0/html/dns.rdtypes.ANY.TXT.TXT-class.html
                     rr.type = 'TXT'
-                    rr.content = ' '.join(rdata.strings)
+                    rr.content = '"%s"' % ''.join(rdata.strings)
                 
                 elif rdataset.rdtype == dns.rdatatype._by_text['CNAME']:
                     # http://www.dnspython.org/docs/1.10.0/html/dns.rdtypes.ANY.CNAME.CNAME-class.html
@@ -369,7 +369,7 @@ def process_and_import_zone_data(zone, owner, overwrite=False):
                 elif rdataset.rdtype == dns.rdatatype._by_text['SPF']:
                     # http://www.dnspython.org/docs/1.10.0/html/dns.rdtypes.ANY.SPF.SPF-class.html
                     rr.type = 'SPF'
-                    rr.content = ' '.join(rdata.strings)
+                    rr.content = '"%s"' % ''.join(rdata.strings)
                 
                 elif rdataset.rdtype == dns.rdatatype._by_text['PTR']:
                     # http://www.dnspython.org/docs/1.10.0/html/dns.rdtypes.ANY.PTR.PTR-class.html
@@ -471,7 +471,7 @@ def generate_zone_file(origin):
             rdtype = dns.rdatatype._by_text.get('TXT')
             rdataset = zone.find_rdataset(record_name, rdtype=rdtype, create=True)
             rdata = dns.rdtypes.ANY.TXT.TXT(rdclass, rdtype,
-                strings = rr.content.split(';')
+                strings = [rr.content.strip('"')]
             )
             rdataset.add(rdata, ttl=int(rr.ttl))
         
@@ -507,7 +507,7 @@ def generate_zone_file(origin):
             rdtype = dns.rdatatype._by_text.get('SPF')
             rdataset = zone.find_rdataset(record_name, rdtype=rdtype, create=True)
             rdata = dns.rdtypes.ANY.SPF.SPF(rdclass, rdtype,
-                strings = rr.content.split(';')
+                strings = [rr.content.strip('"')]
             )
             rdataset.add(rdata, ttl=int(rr.ttl))
         
