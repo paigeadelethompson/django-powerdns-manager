@@ -36,7 +36,12 @@ from django.http import HttpResponse
 from django.http import HttpResponseNotAllowed
 from django.http import HttpResponseBadRequest
 from django.http import HttpResponseNotFound
-from django.db.models.loading import cache
+
+try:
+    from django.apps import apps as cache
+except ImportError:
+    from django.db.models.loading import cache
+
 from django.utils.html import mark_safe
 from django.core.validators import validate_ipv4_address
 from django.core.validators import validate_ipv6_address

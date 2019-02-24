@@ -25,7 +25,12 @@
 #
 
 from django.contrib import admin
-from django.db.models.loading import cache
+
+try:
+    from django.apps import apps as cache
+except ImportError:
+    from django.db.models.loading import cache
+
 from django.contrib import messages
 from django.contrib.admin import SimpleListFilter
 from django.utils.translation import ugettext_lazy as _

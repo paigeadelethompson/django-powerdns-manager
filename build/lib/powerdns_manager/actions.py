@@ -37,7 +37,12 @@ from django.utils.translation import ugettext_lazy, ugettext as _
 from django.contrib import messages
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.db.models.loading import cache
+
+try:
+    from django.apps import apps as cache
+except ImportError:
+    from django.db.models.loading import cache
+
 from django.core.urlresolvers import reverse
 
 from powerdns_manager.forms import ZoneTypeSelectionForm

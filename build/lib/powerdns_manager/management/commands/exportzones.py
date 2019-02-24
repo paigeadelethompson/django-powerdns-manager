@@ -29,7 +29,11 @@ import sys
 from optparse import make_option
 
 from django.core.management.base import BaseCommand, CommandError
-from django.db.models.loading import cache
+
+try:
+    from django.apps import apps as cache
+except ImportError:
+    from django.db.models.loading import cache
 
 from powerdns_manager.utils import generate_zone_file
 

@@ -27,7 +27,12 @@
 from django.db import models
 from django.db.models import signals
 from django.utils.translation import ugettext_lazy as _
-from django.db.models.loading import cache
+
+try:
+    from django.apps import apps as cache
+except ImportError:
+    from django.db.models.loading import cache
+
 from django.core.urlresolvers import reverse
 
 from powerdns_manager import settings

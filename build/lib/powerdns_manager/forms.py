@@ -28,7 +28,12 @@ import time
 import re
 
 from django import forms
-from django.db.models.loading import cache
+
+try:
+    from django.apps import apps as cache
+except ImportError:
+    from django.db.models.loading import cache
+
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import validate_ipv4_address
 from django.core.validators import validate_ipv6_address
